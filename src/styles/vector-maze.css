@@ -20,44 +20,73 @@
 }
 
 .vector-maze-stage__walls {
-  filter: drop-shadow(0 0 3px rgb(216 255 240 / 38%));
+  filter:
+    drop-shadow(0 0 1.5px rgb(255 255 255 / 88%))
+    drop-shadow(0 0 4px rgb(85 170 255 / 68%));
 }
 
 .vector-maze-stage__wall {
-  fill: #d8fff0;
+  fill: none;
+  stroke: #d8fff0;
+  stroke-width: 2.5;
+  stroke-linecap: square;
+  stroke-linejoin: miter;
+  vector-effect: non-scaling-stroke;
+  shape-rendering: geometricPrecision;
 }
 
-.vector-maze-stage__start {
-  fill: rgb(2 8 8 / 82%);
-  stroke: #55aaff;
-  stroke-width: 2;
-  stroke-dasharray: 3 3;
-  filter: drop-shadow(0 0 5px rgb(85 170 255 / 72%));
+.vector-maze-stage__exit-cheese {
+  filter:
+    drop-shadow(0 0 2px rgb(255 255 255 / 88%))
+    drop-shadow(0 0 5px rgb(85 170 255 / 62%));
 }
 
-.vector-maze-stage__exit-stem {
-  stroke: var(--color-success);
-  stroke-width: 3;
-  filter: drop-shadow(0 0 5px rgb(94 230 138 / 68%));
+.vector-maze-stage__exit-cheese-face,
+.vector-maze-stage__exit-cheese-edge,
+.vector-maze-stage__exit-cheese-hole {
+  fill: none;
+  stroke: #d8fff0;
+  vector-effect: non-scaling-stroke;
+  shape-rendering: geometricPrecision;
 }
 
-.vector-maze-stage__exit {
-  fill: var(--color-success);
-  stroke: #effff4;
-  stroke-width: 2;
-  filter: drop-shadow(0 0 7px rgb(94 230 138 / 78%));
-  transform-box: fill-box;
-  transform-origin: center;
-  animation: vector-maze-exit-pulse 850ms ease-in-out infinite alternate;
+.vector-maze-stage__exit-cheese-face {
+  stroke-width: 1.5;
+  stroke-linejoin: miter;
+}
+
+.vector-maze-stage__exit-cheese-edge {
+  stroke-width: 1.2;
+}
+
+.vector-maze-stage__exit-cheese-hole {
+  stroke-width: 1;
 }
 
 .vector-maze-stage__player {
-  fill: #ffffff;
-  stroke: #55aaff;
-  stroke-width: 2;
+  pointer-events: none;
   filter:
-    drop-shadow(0 0 3px rgb(255 255 255 / 90%))
-    drop-shadow(0 0 7px rgb(85 170 255 / 74%));
+    drop-shadow(0 0 2px rgb(255 255 255 / 88%))
+    drop-shadow(0 0 5px rgb(85 170 255 / 72%));
+}
+
+.vector-maze-stage__mouse-wire,
+.vector-maze-stage__mouse-accent {
+  fill: none;
+  stroke-linecap: square;
+  stroke-linejoin: miter;
+  vector-effect: non-scaling-stroke;
+  shape-rendering: geometricPrecision;
+}
+
+.vector-maze-stage__mouse-wire {
+  stroke: #d8fff0;
+  stroke-width: 1.5;
+}
+
+.vector-maze-stage__mouse-accent {
+  stroke: #55aaff;
+  stroke-width: 1.35;
 }
 
 .vector-maze-stage__instruction {
@@ -73,14 +102,19 @@
   color: var(--color-success);
 }
 
-@keyframes vector-maze-exit-pulse {
-  from {
-    opacity: 0.72;
-    transform: scale(0.92);
+@keyframes vector-maze-exit-flicker {
+  0%,
+  71% {
+    opacity: 1;
   }
 
-  to {
+  72%,
+  86% {
+    opacity: 0;
+  }
+
+  87%,
+  100% {
     opacity: 1;
-    transform: scale(1.08);
   }
 }

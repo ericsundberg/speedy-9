@@ -23,6 +23,8 @@ import {
 } from "./hub-layout";
 import {
   findFirstSelectableIndex,
+  isHubStageLaunchable,
+  isHubStageNavigable,
   moveGridSelection,
 } from "./hub-navigation";
 import type {
@@ -158,19 +160,31 @@ export class HubScene implements Scene {
     const finalUnlocked =
       this.options.run.completedStageIds.length
       === PRELIMINARY_STAGE_IDS.length;
-    const available = isFinal ? finalUnlocked : !completed;
+    const stageState =
+      completed
+        ? "complete"
+        : isFinal && !finalUnlocked
+          ? "locked"
+          : "available";
+
+    const navigable =
+      isHubStageNavigable(stageState);
+
+    const launchable =
+      isHubStageLaunchable(stageState);
 
     const tile = document.createElement("button");
     tile.className = "hub-stage";
     tile.type = "button";
     tile.dataset.stageId = stageId;
-    tile.dataset.stageState =
-      completed
-        ? "complete"
-        : available
-          ? "available"
-          : "locked";
-    tile.disabled = !available;
+    tile.dataset.stageState = stageState;
+    tile.dataset.stageLaunchable =
+      launchable.toString();
+    tile.disabled = !navigable;
+
+    if (!launchable) {
+      tile.setAttribute("aria-disabled", "true");
+    }
 
     if (isFinal) {
       tile.classList.add("hub-stage--final");
@@ -187,11 +201,9 @@ export class HubScene implements Scene {
     }
 
     const stateLabel =
-      completed
-        ? "complete"
-        : available
-          ? "available"
-          : "unavailable";
+      stageState === "locked"
+        ? "unavailable"
+        : stageState;
 
     tile.setAttribute(
       "aria-label",
@@ -287,6 +299,7 @@ export class HubScene implements Scene {
     if (
       !(candidate instanceof HTMLButtonElement)
       || candidate.disabled
+      || candidate.dataset.stageLaunchable !== "true"
     ) {
       return;
     }

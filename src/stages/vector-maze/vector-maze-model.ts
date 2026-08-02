@@ -78,19 +78,20 @@ export const VECTOR_MAZE_EXIT_RECT: VectorMazeRect = {
   height: 20,
 };
 
-const PLAYER_MIN_X =
-  MAZE_ORIGIN_X
-  + VECTOR_MAZE_WALL_THICKNESS / 2
-  + VECTOR_MAZE_PLAYER_RADIUS;
+/*
+ * The maze walls still collide normally, but the full SVG field is
+ * traversable. This intentionally permits the speedrun shortcut of
+ * leaving through an opening and travelling around the maze exterior.
+ */
+const PLAYER_MIN_X = VECTOR_MAZE_PLAYER_RADIUS;
 
 const PLAYER_MAX_X =
-  MAZE_ORIGIN_X
-  + MAZE_CELL_COUNT * VECTOR_MAZE_CELL_SIZE
-  - VECTOR_MAZE_WALL_THICKNESS / 2
-  - VECTOR_MAZE_PLAYER_RADIUS;
+  VECTOR_MAZE_VIEW_WIDTH - VECTOR_MAZE_PLAYER_RADIUS;
 
-const PLAYER_MIN_Y = VECTOR_MAZE_EXIT_POSITION.y;
-const PLAYER_MAX_Y = VECTOR_MAZE_START_POSITION.y;
+const PLAYER_MIN_Y = VECTOR_MAZE_PLAYER_RADIUS;
+
+const PLAYER_MAX_Y =
+  VECTOR_MAZE_VIEW_HEIGHT - VECTOR_MAZE_PLAYER_RADIUS;
 
 function appendHorizontalWallRuns(
   walls: VectorMazeRect[],

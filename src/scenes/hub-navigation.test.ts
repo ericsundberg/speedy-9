@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
 import {
   findFirstSelectableIndex,
+  isHubStageLaunchable,
+  isHubStageNavigable,
   moveGridSelection,
 } from "./hub-navigation";
 
@@ -18,6 +20,24 @@ describe("hub grid navigation", () => {
         true,
       ]),
     ).toBe(2);
+  });
+
+  it("allows completed stages to be highlighted but not launched", () => {
+    expect(
+      isHubStageNavigable("complete"),
+    ).toBe(true);
+
+    expect(
+      isHubStageLaunchable("complete"),
+    ).toBe(false);
+
+    expect(
+      isHubStageNavigable("locked"),
+    ).toBe(false);
+
+    expect(
+      isHubStageLaunchable("available"),
+    ).toBe(true);
   });
 
   it("moves horizontally", () => {

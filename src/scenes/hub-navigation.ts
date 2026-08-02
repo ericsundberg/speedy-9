@@ -3,6 +3,23 @@ export interface GridMovement {
   readonly columnDelta: number;
 }
 
+export type HubStageInteractionState =
+  | "available"
+  | "complete"
+  | "locked";
+
+export function isHubStageNavigable(
+  state: HubStageInteractionState,
+): boolean {
+  return state !== "locked";
+}
+
+export function isHubStageLaunchable(
+  state: HubStageInteractionState,
+): boolean {
+  return state === "available";
+}
+
 function modulo(value: number, divisor: number): number {
   return ((value % divisor) + divisor) % divisor;
 }
