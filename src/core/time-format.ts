@@ -34,13 +34,14 @@ export function formatDurationMs(milliseconds: number): string {
     / MILLISECONDS_PER_SECOND,
   );
 
-  const remainingMilliseconds =
-    totalMilliseconds % MILLISECONDS_PER_SECOND;
+  const centiseconds = Math.floor(
+    totalMilliseconds % MILLISECONDS_PER_SECOND / 10,
+  );
 
   if (hours > 0) {
     return (
       `${hours}:${pad(minutes, 2)}:${pad(seconds, 2)}`
-      + `.${pad(remainingMilliseconds, 3)}`
+      + `.${pad(centiseconds, 2)}`
     );
   }
 
@@ -50,7 +51,7 @@ export function formatDurationMs(milliseconds: number): string {
 
   return (
     `${totalMinutes}:${pad(seconds, 2)}`
-    + `.${pad(remainingMilliseconds, 3)}`
+    + `.${pad(centiseconds, 2)}`
   );
 }
 

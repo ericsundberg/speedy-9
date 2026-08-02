@@ -6,20 +6,20 @@ import {
 
 describe('time formatting', () => {
   it('formats an empty timer', () => {
-    expect(formatDurationMs(0)).toBe('0:00.000');
+    expect(formatDurationMs(0)).toBe('0:00.00');
   });
 
   it('formats minute-based durations', () => {
-    expect(formatDurationMs(62_345)).toBe('1:02.345');
+    expect(formatDurationMs(62_345)).toBe('1:02.34');
   });
 
   it('formats hour-based durations', () => {
-    expect(formatDurationMs(3_723_004)).toBe('1:02:03.004');
+    expect(formatDurationMs(3_723_004)).toBe('1:02:03.00');
   });
 
   it('safely normalizes invalid durations', () => {
-    expect(formatDurationMs(-1)).toBe('0:00.000');
-    expect(formatDurationMs(Number.NaN)).toBe('0:00.000');
+    expect(formatDurationMs(-1)).toBe('0:00.00');
+    expect(formatDurationMs(Number.NaN)).toBe('0:00.00');
   });
 
   it('formats favorable and unfavorable deltas', () => {

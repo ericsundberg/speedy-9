@@ -275,6 +275,43 @@
     #010303;
 }
 
+
+.game-display::before {
+  position: absolute;
+  z-index: 3;
+  inset: 0;
+  pointer-events: none;
+  content: "";
+  background:
+    repeating-linear-gradient(
+      180deg,
+      transparent 0,
+      transparent 18px,
+      rgb(192 255 229 / 0.8%) 22px,
+      rgb(255 255 255 / 2.8%) 25px,
+      rgb(192 255 229 / 0.8%) 28px,
+      transparent 34px,
+      transparent 76px
+    ),
+    repeating-linear-gradient(
+      180deg,
+      transparent 0,
+      transparent 48px,
+      rgb(136 220 190 / 0.6%) 54px,
+      rgb(224 255 242 / 1.7%) 59px,
+      rgb(136 220 190 / 0.6%) 64px,
+      transparent 72px,
+      transparent 121px
+    );
+  background-position:
+    0 -76px,
+    0 -121px;
+  mix-blend-mode: screen;
+  opacity: 0.72;
+  animation: crt-raster-roll 4.8s linear infinite;
+  will-change: background-position;
+}
+
 .game-display::after {
   position: absolute;
   z-index: 4;
@@ -289,6 +326,7 @@
       transparent 1px,
       transparent 4px
     );
+  mix-blend-mode: screen;
   opacity: 0.35;
 }
 
@@ -338,6 +376,28 @@
   place-items: center;
   padding: clamp(1.25rem, 4vw, 4rem);
 }
+
+
+@keyframes crt-raster-roll {
+  from {
+    background-position:
+      0 -76px,
+      0 -121px;
+  }
+
+  to {
+    background-position:
+      0 76px,
+      0 121px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .game-display::before {
+    animation: none;
+    opacity: 0;
+  }
+}
+
 
 @keyframes orbit-drift {
   to {
