@@ -403,4 +403,93 @@ describe("RunManager", () => {
       "stage",
     ]);
   });
+  it("preserves the Memory Burst seed when progress is unchanged", () => {
+    const clock = new FakeClock();
+    const manager = new RunManager(clock);
+
+    manager.beginRun(0x1234_5678);
+
+    const initialSeed =
+      manager.getStageSeed("memory-burst");
+
+    manager.enterStage("memory-burst");
+
+    const activeSeed =
+      manager.getStageSeed("memory-burst");
+
+    manager.exitStage();
+    manager.enterStage("memory-burst");
+
+    const reenteredSeed =
+      manager.getStageSeed("memory-burst");
+
+    expect(initialSeed).not.toBeNull();
+    expect(activeSeed).toBe(initialSeed);
+    expect(reenteredSeed).toBe(initialSeed);
+  });
+
+  it("changes the Memory Burst seed after another stage is cleared", () => {
+    const clock = new FakeClock();
+    const manager = new RunManager(clock);
+
+    manager.beginRun(0x1234_5678);
+
+    const initialSeed =
+      manager.getStageSeed("memory-burst");
+
+    completePreliminary(
+      manager,
+      clock,
+      "deadeye",
+    );
+
+    const updatedSeed =
+      manager.getStageSeed("memory-burst");
+
+    expect(initialSeed).not.toBeNull();
+    expect(updatedSeed).not.toBeNull();
+    expect(updatedSeed).not.toBe(initialSeed);
+  });
+
+  it("derives the same Memory Burst seed for the same cleared-stage set", () => {
+    const firstClock = new FakeClock();
+    const firstManager = new RunManager(firstClock);
+
+    const secondClock = new FakeClock();
+    const secondManager = new RunManager(secondClock);
+
+    firstManager.beginRun(0x1234_5678);
+    secondManager.beginRun(0x1234_5678);
+
+    completePreliminary(
+      firstManager,
+      firstClock,
+      "deadeye",
+    );
+
+    completePreliminary(
+      firstManager,
+      firstClock,
+      "pong-blitz",
+    );
+
+    completePreliminary(
+      secondManager,
+      secondClock,
+      "pong-blitz",
+    );
+
+    completePreliminary(
+      secondManager,
+      secondClock,
+      "deadeye",
+    );
+
+    expect(
+      firstManager.getStageSeed("memory-burst"),
+    ).toBe(
+      secondManager.getStageSeed("memory-burst"),
+    );
+  });
+
 });

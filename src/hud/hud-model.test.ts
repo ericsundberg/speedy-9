@@ -65,7 +65,7 @@ describe("createHudViewModel", () => {
     );
 
     expect(model.statusText).toBe("READY");
-    expect(model.timerText).toBe("0:00.000");
+    expect(model.timerText).toBe("0:00.00");
     expect(model.penaltyText).toBe("—");
     expect(model.rows).toHaveLength(9);
     expect(
@@ -88,7 +88,7 @@ describe("createHudViewModel", () => {
     );
 
     expect(model.statusText).toBe("RUNNING");
-    expect(model.timerText).toBe("0:01.234");
+    expect(model.timerText).toBe("0:01.23");
     expect(model.timerDateTime).toBe("PT1.234S");
     expect(model.rows[0]?.state).toBe("available");
   });
@@ -127,7 +127,7 @@ describe("createHudViewModel", () => {
     );
 
     expect(row.state).toBe("complete");
-    expect(row.timeText).toBe("0:12.345");
+    expect(row.timeText).toBe("0:12.34");
   });
 
   it("unlocks the final row after eight preliminary completions", () => {

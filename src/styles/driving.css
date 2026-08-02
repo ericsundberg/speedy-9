@@ -1,0 +1,291 @@
+.driving-stage {
+  display: grid;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  grid-template-rows: minmax(0, 1fr) auto;
+  gap: 0.32rem;
+  place-items: center;
+  color: #eafff7;
+}
+
+.driving-stage__board {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  overflow: visible;
+  background:
+    linear-gradient(
+      180deg,
+      rgb(9 24 19 / 48%) 0%,
+      rgb(1 5 4 / 86%) 29%,
+      #000000 100%
+    );
+}
+
+.driving-stage__horizon,
+.driving-stage__scenery,
+.driving-stage__road-edge,
+.driving-stage__lane-marker,
+.driving-stage__car-body,
+.driving-stage__car-detail,
+.driving-stage__car-wheel,
+.driving-stage__car-accent {
+  fill: none;
+  stroke: #eafff7;
+  stroke-linecap: square;
+  stroke-linejoin: miter;
+  vector-effect: non-scaling-stroke;
+}
+
+.driving-stage__horizon {
+  stroke-width: 1;
+  opacity: 0.25;
+}
+
+.driving-stage__scenery {
+  stroke: #8fb9a9;
+  stroke-width: 1.2;
+  opacity: 0.34;
+  filter: drop-shadow(0 0 4px rgb(143 185 169 / 24%));
+}
+
+.driving-stage__road-edge {
+  stroke-width: 2.1;
+  filter:
+    drop-shadow(0 0 3px rgb(234 255 247 / 82%))
+    drop-shadow(0 0 8px rgb(87 229 173 / 34%));
+}
+
+.driving-stage__lane-marker {
+  stroke-width: 1.8;
+  filter: drop-shadow(0 0 3px rgb(234 255 247 / 64%));
+}
+
+.driving-stage__ai-car {
+  filter:
+    drop-shadow(0 0 2px rgb(255 255 255 / 84%))
+    drop-shadow(0 0 7px rgb(87 229 173 / 42%));
+}
+
+.driving-stage__ai-car[data-driver="ai-2"] {
+  opacity: 0.9;
+}
+
+.driving-stage__ai-car[data-driver="ai-3"] {
+  stroke-dasharray: 4 1;
+}
+
+.driving-stage__ai-label {
+  fill: #d8fff0;
+  font-family: var(--font-display);
+  font-size: 18px;
+  paint-order: stroke;
+  stroke: #000000;
+  stroke-width: 2px;
+}
+
+.driving-stage__readout--position {
+  fill: #d8fff0;
+  font-size: 19px;
+}
+
+.driving-stage__player-car--impact,
+.driving-stage__ai-car--impact {
+  filter:
+    drop-shadow(0 0 4px rgb(255 255 255 / 96%))
+    drop-shadow(0 0 14px rgb(255 230 120 / 70%));
+}
+
+.driving-stage__player-car {
+  filter:
+    drop-shadow(0 0 3px rgb(255 255 255 / 92%))
+    drop-shadow(0 0 9px rgb(87 229 173 / 52%));
+}
+
+.driving-stage__car-body {
+  stroke-width: 2;
+}
+
+.driving-stage__car-detail {
+  stroke-width: 1.35;
+  opacity: 0.88;
+}
+
+.driving-stage__car-wheel {
+  stroke-width: 1.7;
+}
+
+.driving-stage__car-accent {
+  stroke: #b8ffe4;
+  stroke-width: 1.8;
+}
+
+.driving-stage__title,
+.driving-stage__readout {
+  fill: #eafff7;
+  font-family: var(--font-display);
+  paint-order: stroke;
+  stroke: rgb(0 0 0 / 72%);
+  stroke-width: 2px;
+  filter: drop-shadow(0 0 5px rgb(87 229 173 / 44%));
+}
+
+.driving-stage__title {
+  font-size: 23px;
+  letter-spacing: 0.16em;
+}
+
+.driving-stage__readout {
+  font-size: 17px;
+  letter-spacing: 0.09em;
+}
+
+.driving-stage__readout--surface {
+  fill: #a8d7c5;
+}
+
+.driving-stage__readout--warning {
+  fill: #fff0a0;
+  filter: drop-shadow(0 0 6px rgb(255 224 92 / 58%));
+}
+
+.driving-stage__controls {
+  margin: 0;
+  color: #9fcabb;
+  font-family: var(--font-hud);
+  font-size: clamp(0.5rem, 0.92vw, 0.69rem);
+  letter-spacing: 0.06em;
+  line-height: 1.2;
+  text-align: center;
+}
+
+.driving-stage__pickup-wire,
+.driving-stage__pickup-frame,
+.driving-stage__missile-wire,
+.driving-stage__missile-flame,
+.driving-stage__boost-streak {
+  fill: none;
+  stroke: #eafff7;
+  stroke-linecap: square;
+  stroke-linejoin: miter;
+  vector-effect: non-scaling-stroke;
+}
+
+.driving-stage__pickup {
+  filter:
+    drop-shadow(0 0 3px rgb(255 255 255 / 88%))
+    drop-shadow(0 0 10px rgb(87 229 173 / 54%));
+}
+
+.driving-stage__pickup-wire {
+  stroke-width: 2.2;
+}
+
+.driving-stage__pickup-frame {
+  stroke-width: 1.15;
+  stroke-dasharray: 5 3;
+  opacity: 0.72;
+}
+
+.driving-stage__pickup--boost {
+  animation:
+    driving-pickup-pulse 520ms steps(2, end) infinite;
+}
+
+.driving-stage__missile {
+  filter:
+    drop-shadow(0 0 3px rgb(255 255 255 / 95%))
+    drop-shadow(0 0 9px rgb(255 230 120 / 64%));
+}
+
+.driving-stage__missile-wire {
+  stroke-width: 2;
+}
+
+.driving-stage__missile-flame {
+  stroke: #fff0a0;
+  stroke-width: 2.4;
+  stroke-dasharray: 5 3;
+}
+
+.driving-stage__boost-streak {
+  stroke: #caffeb;
+  stroke-width: 2;
+  filter: drop-shadow(0 0 5px rgb(87 229 173 / 74%));
+}
+
+.driving-stage__readout--item {
+  fill: #9fcabb;
+  font-size: 16px;
+}
+
+.driving-stage__readout--item-ready {
+  fill: #eafff7;
+  filter:
+    drop-shadow(0 0 6px rgb(87 229 173 / 62%));
+}
+
+@keyframes driving-pickup-pulse {
+  0% {
+    opacity: 0.72;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .driving-stage__pickup--boost {
+    animation: none;
+  }
+}
+
+.driving-stage__safety-cone {
+  filter:
+    drop-shadow(0 0 3px rgb(255 255 255 / 90%))
+    drop-shadow(0 0 9px rgb(87 229 173 / 48%));
+}
+
+.driving-stage__safety-cone-outline,
+.driving-stage__safety-cone-stripe,
+.driving-stage__safety-cone-base {
+  fill: none;
+  stroke: #eafff7;
+  stroke-linecap: square;
+  stroke-linejoin: miter;
+  vector-effect: non-scaling-stroke;
+}
+
+.driving-stage__safety-cone-outline,
+.driving-stage__safety-cone-base {
+  stroke-width: 2.4;
+}
+
+.driving-stage__safety-cone-stripe {
+  stroke-width: 1.8;
+}
+
+.driving-stage__finish-segment {
+  fill: none;
+  stroke: #eafff7;
+  stroke-linecap: square;
+  vector-effect: non-scaling-stroke;
+  filter:
+    drop-shadow(0 0 3px rgb(255 255 255 / 88%))
+    drop-shadow(0 0 8px rgb(87 229 173 / 48%));
+}
+
+.driving-stage__finish-segment--odd {
+  opacity: 0.58;
+}
+
+.driving-stage__readout--finish {
+  fill: #9fcabb;
+  font-size: 14px;
+  letter-spacing: 1px;
+}

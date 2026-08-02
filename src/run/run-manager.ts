@@ -60,6 +60,22 @@ function validateRunSeed(seed: number): number {
   return seed >>> 0;
 }
 
+function createMemoryBurstSeedNamespace(
+  completedStageIds: readonly PreliminaryStageId[],
+): string {
+  const clearedStageIds = PRELIMINARY_STAGE_IDS.filter(
+    (stageId) => (
+      stageId !== "memory-burst"
+      && completedStageIds.includes(stageId)
+    ),
+  );
+
+  return [
+    "memory-burst",
+    `cleared:${clearedStageIds.join(",")}`,
+  ].join("|");
+}
+
 function cloneSplitResult(split: SplitResult): SplitResult {
   return {
     ...split,
@@ -453,6 +469,9 @@ export class RunManager {
   public getStageSeed(stageId: StageId): number | null {
     let runSeed: number;
 
+    let completedStageIds:
+      readonly PreliminaryStageId[];
+
     switch (this.state.kind) {
       case "idle":
         return null;
@@ -460,11 +479,24 @@ export class RunManager {
       case "hub":
       case "stage":
         runSeed = this.state.run.seed;
+        completedStageIds =
+          this.state.run.completedStageIds;
         break;
 
       case "complete":
         runSeed = this.state.result.seed;
+        completedStageIds =
+          this.state.result.completedStageIds;
         break;
+    }
+
+    if (stageId === "memory-burst") {
+      return deriveSeed(
+        runSeed,
+        createMemoryBurstSeedNamespace(
+          completedStageIds,
+        ),
+      );
     }
 
     return deriveSeed(runSeed, stageId);
