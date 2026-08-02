@@ -49,7 +49,7 @@ const HUB_STAGE_PRESENTATIONS: Readonly<
     glyph: "pong",
   },
   "pit-sprint": {
-    labelLines: ["PIT", "SPRINT"],
+    labelLines: ["SPACE", "WAR"],
     glyph: "pit",
   },
   "tower-climb": {

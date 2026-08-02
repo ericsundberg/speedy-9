@@ -84,7 +84,7 @@ export class PongBlitzStage implements Stage {
     scene.dataset.stageId = this.id;
     scene.setAttribute(
       "aria-label",
-      "Pong Blitz. First player to nine points wins.",
+      "Pong Blitz. First player to three points wins.",
     );
 
     const svg = createSvgElement("svg", {
@@ -443,7 +443,9 @@ export class PongBlitzStage implements Stage {
       this.render(nowMs);
 
       if (nowMs >= this.failureRestartAtMs) {
-        this.restart();
+        this.active = false;
+        this.failureRestartAtMs = null;
+        this.context.fail();
         return;
       }
 
@@ -515,7 +517,7 @@ export class PongBlitzStage implements Stage {
       this.failureRestartAtMs =
         nowMs + FAILURE_RESTART_DELAY_MS;
 
-      this.showMessage("YOU LOSE", "RESTARTING");
+      this.showMessage("YOU LOSE", "RETURNING TO STAGE SELECT");
     }
 
     this.render(nowMs);

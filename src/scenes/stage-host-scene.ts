@@ -9,7 +9,7 @@ import type {
   StageContext,
 } from "../stages/shared/stage";
 
-type StageHostContext = Omit<StageContext, "root"> & {
+type StageHostContext = Omit<StageContext, "root" | "fail"> & {
   readonly exitStage: () => void;
 };
 
@@ -73,6 +73,7 @@ export class StageHostScene implements Scene {
         root,
         stageSeed: this.context.stageSeed,
         complete: this.handleStageComplete,
+      fail: this.handleStageFail,
         addPenalty: this.context.addPenalty,
       });
 
@@ -324,6 +325,15 @@ export class StageHostScene implements Scene {
       preventScroll: true,
     });
   }
+
+  private readonly handleStageFail = (): void => {
+    if (this.transitionTriggered) {
+      return;
+    }
+
+    this.transitionTriggered = true;
+    this.context.exitStage();
+  };
 
   private readonly handleStageComplete = (): void => {
     if (this.transitionTriggered) {

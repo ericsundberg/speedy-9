@@ -103,14 +103,15 @@ function appendGlyph(
 
     case "pit":
       svg.append(
-        createPath("M15 70 H85 M24 70 L42 28 L57 70 L73 35"),
-        createPath("M32 57 H48 M55 51 H70"),
+        createPath("M18 62 L41 36 L28 31 Z M18 62 L34 49"),
+        createPath("M82 30 L57 48 L73 53 Z M82 30 L65 44"),
         createSvgElement("circle", {
           class: "hub-stage__node",
-          cx: 43,
-          cy: 22,
-          r: 5,
+          cx: 50,
+          cy: 47,
+          r: 6,
         }),
+        createPath("M50 35 V27 M50 59 V67 M38 47 H30 M62 47 H70"),
       );
       break;
 

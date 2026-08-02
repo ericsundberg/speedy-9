@@ -1,0 +1,189 @@
+.space-war-stage {
+  display: grid;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  grid-template-rows: minmax(0, 1fr) auto;
+  gap: 0.35rem;
+  place-items: center;
+  color: #eafff7;
+}
+
+.space-war-stage__board {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  overflow: visible;
+  background: #000000;
+}
+
+.space-war-stage__starfield circle {
+  fill: #dfffee;
+  opacity: 0.42;
+  filter: drop-shadow(0 0 2px rgb(216 255 240 / 45%));
+}
+
+.space-war-stage__gravity-star {
+  filter:
+    drop-shadow(0 0 4px rgb(255 255 255 / 88%))
+    drop-shadow(0 0 10px rgb(216 255 240 / 48%));
+}
+
+.space-war-stage__gravity-star-rotor {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: space-war-star-turn 18s linear infinite;
+}
+
+.space-war-stage__gravity-star-ray {
+  stroke: #ffffff;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+}
+
+.space-war-stage__score {
+  fill: #f4fff9;
+  font-family: var(--font-display);
+  font-size: 31px;
+  letter-spacing: 0.24em;
+  paint-order: stroke;
+  stroke: rgb(255 255 255 / 18%);
+  stroke-width: 1px;
+  filter: drop-shadow(0 0 5px rgb(216 255 240 / 64%));
+}
+
+.space-war-stage__ship {
+  fill: none;
+  stroke: #ffffff;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
+  filter:
+    drop-shadow(0 0 3px rgb(255 255 255 / 92%))
+    drop-shadow(0 0 7px rgb(216 255 240 / 50%));
+}
+
+.space-war-stage__ship--opponent {
+  stroke: #d9e8ff;
+  filter:
+    drop-shadow(0 0 3px rgb(255 255 255 / 86%))
+    drop-shadow(0 0 7px rgb(122 170 255 / 54%));
+}
+
+.space-war-stage__thrust {
+  opacity: 0;
+  stroke-width: 1.4;
+}
+
+.space-war-stage__thrust--visible {
+  opacity: 1;
+  animation: space-war-thrust-flicker 70ms steps(2, jump-none) infinite;
+}
+
+.space-war-stage__missile {
+  fill: #ffffff;
+  filter:
+    drop-shadow(0 0 3px rgb(255 255 255 / 100%))
+    drop-shadow(0 0 8px rgb(216 255 240 / 75%));
+}
+
+.space-war-stage__missile--opponent {
+  fill: #cfe0ff;
+}
+
+.space-war-stage__explosion line {
+  stroke: #ffffff;
+  stroke-linecap: round;
+  stroke-width: 2;
+}
+
+.space-war-stage__explosion {
+  animation: space-war-explosion 540ms ease-out forwards;
+  filter: drop-shadow(0 0 6px rgb(255 255 255 / 80%));
+}
+
+.space-war-stage__explosion--opponent line {
+  stroke: #d5e5ff;
+}
+
+.space-war-stage__message {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 90ms linear;
+}
+
+.space-war-stage__message--visible {
+  opacity: 1;
+}
+
+.space-war-stage__message-backdrop {
+  fill: rgb(0 0 0 / 84%);
+  stroke: #b9d9cd;
+  stroke-width: 1.2;
+}
+
+.space-war-stage__message-title,
+.space-war-stage__message-subtitle {
+  fill: #f4fff9;
+  font-family: var(--font-display);
+  filter: drop-shadow(0 0 5px rgb(216 255 240 / 64%));
+}
+
+.space-war-stage__message-title {
+  font-size: 31px;
+  letter-spacing: 0.11em;
+}
+
+.space-war-stage__message-subtitle {
+  fill: #9fcabb;
+  font-family: var(--font-hud);
+  font-size: 12px;
+  letter-spacing: 0.12em;
+}
+
+.space-war-stage__instruction {
+  margin: 0;
+  color: #9fcabb;
+  font-family: var(--font-hud);
+  font-size: clamp(0.55rem, 1vw, 0.72rem);
+  letter-spacing: 0.075em;
+  text-align: center;
+}
+
+@keyframes space-war-star-turn {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes space-war-thrust-flicker {
+  0% {
+    transform: scaleY(0.72);
+  }
+
+  100% {
+    transform: scaleY(1.1);
+  }
+}
+
+@keyframes space-war-explosion {
+  0% {
+    opacity: 1;
+    transform: scale(0.45) rotate(0deg);
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale(1.75) rotate(34deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .space-war-stage__gravity-star-rotor,
+  .space-war-stage__thrust--visible {
+    animation: none;
+  }
+}

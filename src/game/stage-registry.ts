@@ -60,8 +60,8 @@ export const STAGE_REGISTRY = [
   },
   {
     id: "pit-sprint",
-    shortName: "Pit",
-    displayName: "Pit Sprint",
+    shortName: "War",
+    displayName: "Space War",
     kind: "preliminary",
     order: 4,
     iconId: "pit-sprint",

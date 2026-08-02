@@ -6,6 +6,7 @@ export interface StageContext {
   readonly root: HTMLElement;
   readonly stageSeed: number;
   readonly complete: () => void;
+  readonly fail: () => void;
   readonly addPenalty: (
     milliseconds: number,
     reason: string,
