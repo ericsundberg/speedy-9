@@ -6,7 +6,7 @@ import type {
 } from "../game/stage-registry";
 
 export type HubGlyphId =
-  | "circuit"
+  | "pitfall"
   | "deadeye"
   | "pong"
   | "pit"
@@ -37,8 +37,8 @@ const HUB_STAGE_PRESENTATIONS: Readonly<
   Record<StageId, HubStagePresentation>
 > = {
   "reverse-circuit": {
-    labelLines: ["REVERSE", "CIRCUIT"],
-    glyph: "circuit",
+    labelLines: ["PITFALL", "RUN"],
+    glyph: "pitfall",
   },
   deadeye: {
     labelLines: ["DEAD", "EYE"],

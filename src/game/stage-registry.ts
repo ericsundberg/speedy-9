@@ -36,8 +36,8 @@ export interface StageMetadata {
 export const STAGE_REGISTRY = [
   {
     id: "reverse-circuit",
-    shortName: "Circuit",
-    displayName: "Reverse Circuit",
+    shortName: "Pitfall",
+    displayName: "Pitfall Run",
     kind: "preliminary",
     order: 1,
     iconId: "reverse-circuit",

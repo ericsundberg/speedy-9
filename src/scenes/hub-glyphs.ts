@@ -43,14 +43,29 @@ function appendGlyph(
   glyph: HubGlyphId,
 ): void {
   switch (glyph) {
-    case "circuit":
+    case "pitfall":
       svg.append(
-        createPath("M16 29 H37 V17 H61 V39 H84"),
-        createPath("M16 67 H36 V51 H62 V72 H84"),
-        createNode(16, 29),
-        createNode(84, 39),
-        createNode(16, 67),
-        createNode(84, 72),
+        createPath(
+          "M14 68 H33 M67 68 H86 "
+          + "M33 68 Q50 82 67 68",
+        ),
+        createPath(
+          "M49 18 V39 "
+          + "M49 39 L39 54 "
+          + "M49 39 L61 51 "
+          + "M49 29 L38 37 "
+          + "M49 29 L61 34",
+        ),
+        createSvgElement("circle", {
+          class: "hub-stage__node",
+          cx: 49,
+          cy: 13,
+          r: 5,
+        }),
+        createPath(
+          "M70 16 Q49 26 32 48 "
+          + "M70 16 V8",
+        ),
       );
       break;
 

@@ -14,7 +14,7 @@ import {
   createPongBlitzStage,
 } from "./pong-blitz/pong-blitz-stage";
 import {
-  createReverseCircuitStage,
+  createPitfallRunStage,
 } from "./reverse-circuit/reverse-circuit-stage";
 import {
   createLockedStage,
@@ -35,7 +35,7 @@ import type {
 export function createStage(stageId: StageId): Stage {
   switch (stageId) {
     case "reverse-circuit":
-      return createReverseCircuitStage();
+      return createPitfallRunStage();
 
     case "deadeye":
       return createDeadeyeStage();

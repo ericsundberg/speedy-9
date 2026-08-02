@@ -1,0 +1,284 @@
+.pitfall-stage {
+  display: grid;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  grid-template-rows: minmax(0, 1fr) auto;
+  gap: 0.35rem;
+  place-items: center;
+  color: #eafff7;
+}
+
+.pitfall-stage__board {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  overflow: visible;
+  background: #000000;
+  shape-rendering: geometricPrecision;
+}
+
+.pitfall-stage__canopy,
+.pitfall-stage__tree,
+.pitfall-stage__ground,
+.pitfall-stage__branch,
+.pitfall-stage__pit,
+.pitfall-stage__water,
+.pitfall-stage__crocodile,
+.pitfall-stage__crocodile-teeth,
+.pitfall-stage__scorpion,
+.pitfall-stage__exit,
+.pitfall-stage__platform-outline,
+.pitfall-stage__platform-brace {
+  fill: none;
+  stroke: #dffff1;
+  stroke-linecap: square;
+  stroke-linejoin: miter;
+  filter:
+    drop-shadow(0 0 2px rgb(223 255 241 / 72%))
+    drop-shadow(0 0 6px rgb(126 255 202 / 30%));
+}
+
+.pitfall-stage__canopy {
+  stroke-width: 1.4;
+  opacity: 0.44;
+}
+
+.pitfall-stage__tree {
+  stroke-width: 2;
+  opacity: 0.52;
+}
+
+.pitfall-stage__ground {
+  stroke-width: 3;
+}
+
+.pitfall-stage__branch {
+  stroke-width: 3;
+}
+
+.pitfall-stage__pit {
+  stroke-width: 1.8;
+  opacity: 0.58;
+}
+
+.pitfall-stage__water {
+  stroke-width: 1.7;
+  stroke-dasharray: 6 5;
+  opacity: 0.7;
+  animation:
+    pitfall-water-drift 700ms linear infinite;
+}
+
+.pitfall-stage__vine {
+  stroke: #ffffff;
+  stroke-width: 2;
+  filter:
+    drop-shadow(0 0 3px rgb(255 255 255 / 84%))
+    drop-shadow(0 0 7px rgb(126 255 202 / 36%));
+}
+
+.pitfall-stage__vine-grip {
+  fill: #ffffff;
+  filter:
+    drop-shadow(0 0 4px rgb(255 255 255 / 88%));
+}
+
+.pitfall-stage__log {
+  fill: none;
+  stroke: #ffffff;
+  stroke-width: 2;
+  filter:
+    drop-shadow(0 0 3px rgb(255 255 255 / 80%));
+}
+
+.pitfall-stage__log-spoke {
+  stroke: #ffffff;
+  stroke-width: 1.4;
+}
+
+.pitfall-stage__crocodile {
+  stroke-width: 2.2;
+}
+
+.pitfall-stage__crocodile-teeth {
+  stroke-width: 1.3;
+}
+
+.pitfall-stage__platform {
+  filter:
+    drop-shadow(0 0 3px rgb(255 255 255 / 82%))
+    drop-shadow(0 0 7px rgb(126 255 202 / 34%));
+}
+
+.pitfall-stage__platform-outline {
+  stroke-width: 2.3;
+}
+
+.pitfall-stage__platform-brace {
+  stroke-width: 1.4;
+}
+
+.pitfall-stage__platform--warning {
+  animation:
+    pitfall-platform-warning
+    90ms
+    steps(2, jump-none)
+    infinite;
+}
+
+.pitfall-stage__platform--sinking {
+  opacity: 0.72;
+}
+
+.pitfall-stage__scorpion {
+  stroke-width: 2.1;
+}
+
+.pitfall-stage__treasure {
+  fill: none;
+  stroke: #ffffff;
+  stroke-width: 2.2;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation:
+    pitfall-treasure-pulse
+    580ms
+    ease-in-out
+    infinite
+    alternate;
+  filter:
+    drop-shadow(0 0 4px rgb(255 255 255 / 90%))
+    drop-shadow(0 0 10px rgb(126 255 202 / 55%));
+}
+
+.pitfall-stage__exit {
+  stroke-width: 2.4;
+}
+
+.pitfall-stage__room-title,
+.pitfall-stage__status {
+  fill: #eafff7;
+  font-family: var(--font-hud);
+  filter:
+    drop-shadow(0 0 4px rgb(216 255 240 / 48%));
+}
+
+.pitfall-stage__room-title {
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  opacity: 0.72;
+}
+
+.pitfall-stage__status {
+  font-size: 14px;
+  letter-spacing: 0.08em;
+}
+
+.pitfall-stage__player {
+  fill: none;
+  stroke: #ffffff;
+  stroke-width: 2.3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  filter:
+    drop-shadow(0 0 3px rgb(255 255 255 / 94%))
+    drop-shadow(0 0 8px rgb(126 255 202 / 52%));
+}
+
+.pitfall-stage__player-head {
+  fill: none;
+}
+
+.pitfall-stage__message {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 90ms linear;
+}
+
+.pitfall-stage__message--visible {
+  opacity: 1;
+}
+
+.pitfall-stage__message-backdrop {
+  fill: rgb(0 0 0 / 88%);
+  stroke: #b9d9cd;
+  stroke-width: 1.2;
+}
+
+.pitfall-stage__message-title,
+.pitfall-stage__message-subtitle {
+  fill: #f4fff9;
+  font-family: var(--font-display);
+  filter:
+    drop-shadow(0 0 5px rgb(216 255 240 / 62%));
+}
+
+.pitfall-stage__message-title {
+  font-size: 31px;
+  letter-spacing: 0.11em;
+}
+
+.pitfall-stage__message-subtitle {
+  fill: #9fcabb;
+  font-family: var(--font-hud);
+  font-size: 12px;
+  letter-spacing: 0.1em;
+}
+
+.pitfall-stage__instruction {
+  margin: 0;
+  color: #9fcabb;
+  font-family: var(--font-hud);
+  font-size: clamp(0.54rem, 1vw, 0.7rem);
+  letter-spacing: 0.065em;
+  text-align: center;
+}
+
+.pitfall-stage__canopy,
+.pitfall-stage__tree,
+.pitfall-stage__log,
+.pitfall-stage__log-spoke,
+.pitfall-stage__scorpion {
+  stroke-linecap: square;
+  stroke-linejoin: miter;
+}
+
+@keyframes pitfall-platform-warning {
+  0% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0.24;
+  }
+}
+
+@keyframes pitfall-water-drift {
+  to {
+    stroke-dashoffset: -11;
+  }
+}
+
+@keyframes pitfall-treasure-pulse {
+  from {
+    transform: scale(0.92);
+    opacity: 0.72;
+  }
+
+  to {
+    transform: scale(1.08);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pitfall-stage__water,
+  .pitfall-stage__treasure,
+  .pitfall-stage__platform--warning {
+    animation: none;
+  }
+}
