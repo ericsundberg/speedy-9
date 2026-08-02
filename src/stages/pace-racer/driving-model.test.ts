@@ -13,6 +13,8 @@ import {
   DRIVING_MAX_REVERSE_SPEED,
   DRIVING_SHOULDER_LIMIT,
   DRIVING_SPIN_DURATION_MS,
+  DRIVING_SECRET_TRIGGER_DISTANCE,
+  DRIVING_SECRET_FINISH_DISTANCE,
   DRIVING_FINISH_DISTANCE,
   getDrivingRaceOutcome,
   getDrivingRemainingDistance,
@@ -262,6 +264,64 @@ describe("driving model", () => {
     ).toBe(true);
   });
 
+  it("reaches a very fast reverse speed from rest", () => {
+    const initialState = createInitialDrivingState();
+
+    const isolatedState: DrivingState = {
+      ...initialState,
+      player: {
+        ...initialState.player,
+        distance: 1_000,
+      },
+      aiDrivers: [],
+      pickups: [],
+      missiles: [],
+      bananas: [],
+    };
+
+    const state = stepRepeatedly(
+      isolatedState,
+      {
+        accelerate: false,
+        brake: true,
+        steer: 0,
+      },
+      20,
+    );
+
+    expect(state.route).toBe("main");
+    expect(state.player.speed).toBe(
+      DRIVING_MAX_REVERSE_SPEED,
+    );
+
+    expect(
+      Math.abs(state.player.speed),
+    ).toBeGreaterThan(
+      DRIVING_MAX_FORWARD_SPEED,
+    );
+  });
+
+  it("transitions rapidly from forward motion into reverse", () => {
+    const movingState = replacePlayer(
+      createInitialDrivingState(),
+      {
+        speed: 120,
+      },
+    );
+
+    const state = stepRepeatedly(
+      movingState,
+      {
+        accelerate: false,
+        brake: true,
+        steer: 0,
+      },
+      20,
+    );
+
+    expect(state.player.speed).toBeLessThan(-150);
+  });
+
   it("respects forward and reverse speed limits", () => {
     const initialState = createInitialDrivingState();
 
@@ -331,6 +391,75 @@ describe("driving model", () => {
           ?? Number.POSITIVE_INFINITY,
       );
     }
+  });
+
+  it("gives every rival a competitive straight-line target", () => {
+    const state = stepDriving(
+      createInitialDrivingState(),
+      NEUTRAL_INPUT,
+      50,
+      () => 0,
+    );
+
+    const targetSpeeds = state.aiDrivers.map(
+      (driver) => driver.targetSpeed,
+    );
+
+    expect(Math.min(...targetSpeeds)).toBeGreaterThanOrEqual(
+      DRIVING_MAX_FORWARD_SPEED - 8,
+    );
+
+    expect(Math.max(...targetSpeeds)).toBeGreaterThan(
+      DRIVING_MAX_FORWARD_SPEED,
+    );
+  });
+
+  it("accelerates rivals rapidly toward racing speed", () => {
+    const initialState = createInitialDrivingState();
+
+    const isolatedState: DrivingState = {
+      ...initialState,
+      player: {
+        ...initialState.player,
+        distance: -1_000,
+      },
+      aiDrivers: initialState.aiDrivers.map(
+        (driver) => ({
+          ...driver,
+          decisionRemainingMs: 100_000,
+        }),
+      ),
+      bananas: initialState.bananas.map(
+        (banana) => ({
+          ...banana,
+          active: false,
+        }),
+      ),
+    };
+
+    let state = isolatedState;
+
+    for (
+      let stepIndex = 0;
+      stepIndex < 80;
+      stepIndex += 1
+    ) {
+      state = stepDriving(
+        state,
+        NEUTRAL_INPUT,
+        50,
+        () => 0,
+      );
+    }
+
+    const speeds = state.aiDrivers.map(
+      (driver) => driver.speed,
+    );
+
+    expect(Math.min(...speeds)).toBeGreaterThanOrEqual(200);
+    expect(Math.max(...speeds)).toBeGreaterThan(
+      DRIVING_MAX_FORWARD_SPEED,
+    );
   });
 
   it("reduces AI target speeds on strong curves", () => {
@@ -883,6 +1012,11 @@ describe("driving model", () => {
     ).toBe(true);
   });
 
+  it("uses the requested main and secret route lengths", () => {
+    expect(DRIVING_FINISH_DISTANCE).toBe(10_000);
+    expect(DRIVING_SECRET_FINISH_DISTANCE).toBe(2_500);
+  });
+
   it("reports racing before anyone reaches the finish", () => {
     const state = createInitialDrivingState();
 
@@ -974,6 +1108,117 @@ describe("driving model", () => {
     expect(getDrivingRaceOutcome(state)).toBe(
       "player-lost",
     );
+  });
+
+  it("enters the secret route by reversing behind the start", () => {
+    const initialState = createInitialDrivingState();
+
+    const state: DrivingState = {
+      ...initialState,
+      player: {
+        ...initialState.player,
+        distance:
+          DRIVING_SECRET_TRIGGER_DISTANCE + 1,
+        speed: -200,
+      },
+    };
+
+    const result = stepDriving(
+      state,
+      {
+        accelerate: false,
+        brake: true,
+        steer: 0,
+      },
+      50,
+    );
+
+    expect(result.route).toBe("secret");
+    expect(result.player.distance).toBe(0);
+    expect(result.player.speed).toBeGreaterThan(0);
+    expect(result.player.lateralPosition).toBe(0);
+    expect(result.aiDrivers).toHaveLength(0);
+    expect(result.pickups).toHaveLength(0);
+    expect(result.missiles).toHaveLength(0);
+    expect(result.bananas).toHaveLength(0);
+  });
+
+  it("does not enter the secret route before the trigger", () => {
+    const initialState = createInitialDrivingState();
+
+    const state: DrivingState = {
+      ...initialState,
+      player: {
+        ...initialState.player,
+        distance: -70,
+        speed: -100,
+      },
+    };
+
+    const result = stepDriving(
+      state,
+      {
+        accelerate: false,
+        brake: true,
+        steer: 0,
+      },
+      50,
+    );
+
+    expect(result.route).toBe("main");
+  });
+
+  it("uses the shorter finish on the secret route", () => {
+    const initialState = createInitialDrivingState();
+
+    const state: DrivingState = {
+      ...initialState,
+      route: "secret",
+      player: {
+        ...initialState.player,
+        distance: DRIVING_SECRET_FINISH_DISTANCE,
+      },
+      aiDrivers: [],
+      pickups: [],
+      missiles: [],
+      bananas: [],
+    };
+
+    expect(getDrivingRemainingDistance(state)).toBe(0);
+    expect(getDrivingRaceOutcome(state)).toBe(
+      "player-won",
+    );
+  });
+
+  it("does not leave the secret route during normal driving", () => {
+    const initialState = createInitialDrivingState();
+
+    const state: DrivingState = {
+      ...initialState,
+      route: "secret",
+      player: {
+        ...initialState.player,
+        distance: 100,
+        speed: 100,
+      },
+      aiDrivers: [],
+      pickups: [],
+      missiles: [],
+      bananas: [],
+    };
+
+    const result = stepDriving(
+      state,
+      {
+        accelerate: true,
+        brake: false,
+        steer: 0,
+      },
+      50,
+    );
+
+    expect(result.route).toBe("secret");
+    expect(result.player.distance).toBeGreaterThan(100);
   });
 
   it("calculates the player race position", () => {

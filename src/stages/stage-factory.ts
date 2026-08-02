@@ -20,8 +20,8 @@ import {
   createLockedStage,
 } from "./speed-lock/speed-lock-stage";
 import {
-  createTimesRushStage,
-} from "./times-rush/times-rush-stage";
+  createPaceRacerStage,
+} from "./pace-racer/pace-racer-stage";
 import {
   createTowerClimbStage,
 } from "./tower-climb/tower-climb-stage";
@@ -55,8 +55,8 @@ export function createStage(stageId: StageId): Stage {
     case "memory-burst":
       return createMemoryBurstStage();
 
-    case "times-rush":
-      return createTimesRushStage();
+    case "pace-racer":
+      return createPaceRacerStage();
 
     case "speed-lock":
       return createLockedStage();

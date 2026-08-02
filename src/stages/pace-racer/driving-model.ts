@@ -5,13 +5,15 @@ export const DRIVING_ROAD_EDGE = 1;
 export const DRIVING_SHOULDER_LIMIT = 1.32;
 
 export const DRIVING_MAX_FORWARD_SPEED = 210;
-export const DRIVING_MAX_REVERSE_SPEED = -44;
+export const DRIVING_MAX_REVERSE_SPEED = -240;
 
 export const DRIVING_SPIN_DURATION_MS = 3_000;
 export const DRIVING_BOOST_DURATION_MS = 1_500;
 export const DRIVING_BOOST_MAX_SPEED = 270;
 export const DRIVING_BANANA_SLOWDOWN_MS = 1_800;
-export const DRIVING_FINISH_DISTANCE = 3_200;
+export const DRIVING_FINISH_DISTANCE = 10_000;
+export const DRIVING_SECRET_TRIGGER_DISTANCE = -160;
+export const DRIVING_SECRET_FINISH_DISTANCE = 2_500;
 
 export const DRIVING_AI_IDS = [
   "ai-1",
@@ -25,6 +27,10 @@ export type DrivingAiId =
 export type DrivingDriverId =
   | "player"
   | DrivingAiId;
+
+export type DrivingRoute =
+  | "main"
+  | "secret";
 
 export type DrivingRaceOutcome =
   | "racing"
@@ -61,7 +67,8 @@ export interface DrivingBananaState {
 
 const MAX_STEP_MS = 50;
 const FORWARD_ACCELERATION = 72;
-const REVERSE_ACCELERATION = 48;
+const REVERSE_ACCELERATION = 420;
+const REVERSE_ENTRY_DECELERATION = 300;
 const BRAKING_DECELERATION = 118;
 const COAST_DECELERATION = 24;
 const SHOULDER_DECELERATION = 72;
@@ -84,10 +91,12 @@ const AI_BANANA_LOOKAHEAD = 70;
 const DRIVING_OBJECT_PATTERN_LENGTH = 1_600;
 const DRIVING_OBJECT_RECYCLE_BEHIND_DISTANCE = 120;
 
-const AI_ACCELERATION = 48;
-const AI_DECELERATION = 78;
-const AI_STEERING_RATE = 0.72;
-const AI_CURVE_SPEED_PENALTY = 108;
+const AI_ACCELERATION = 82;
+const AI_DECELERATION = 96;
+const AI_STEERING_RATE = 1.08;
+const AI_CURVE_SPEED_PENALTY = 48;
+const AI_MAX_SPEED =
+  DRIVING_MAX_FORWARD_SPEED + 8;
 
 const CAR_COLLISION_DISTANCE = 18;
 const CAR_COLLISION_LATERAL_DISTANCE = 0.28;
@@ -110,18 +119,18 @@ const AI_PROFILES: Readonly<
   Record<DrivingAiId, DrivingAiProfile>
 > = {
   "ai-1": {
-    cruisingSpeed: 184,
-    decisionPeriodMs: 520,
+    cruisingSpeed: 206,
+    decisionPeriodMs: 340,
     sequenceOffset: 0,
   },
   "ai-2": {
-    cruisingSpeed: 190,
-    decisionPeriodMs: 640,
+    cruisingSpeed: 216,
+    decisionPeriodMs: 400,
     sequenceOffset: 1,
   },
   "ai-3": {
-    cruisingSpeed: 178,
-    decisionPeriodMs: 470,
+    cruisingSpeed: 202,
+    decisionPeriodMs: 300,
     sequenceOffset: 2,
   },
 };
@@ -159,6 +168,7 @@ export interface DrivingAiState {
 
 export interface DrivingState {
   readonly elapsedMs: number;
+  readonly route: DrivingRoute;
   readonly player: DrivingPlayerState;
   readonly aiDrivers: readonly DrivingAiState[];
   readonly pickups: readonly DrivingPickupState[];
@@ -247,7 +257,7 @@ function updatePlayerSpeed(
       nextSpeed = approach(
         nextSpeed,
         0,
-        BRAKING_DECELERATION * deltaSeconds,
+        REVERSE_ENTRY_DECELERATION * deltaSeconds,
       );
     } else {
       nextSpeed -= REVERSE_ACCELERATION * deltaSeconds;
@@ -1065,7 +1075,7 @@ function updateAiDriver(
   targetSpeed = clamp(
     targetSpeed,
     72,
-    DRIVING_MAX_FORWARD_SPEED - 8,
+    AI_MAX_SPEED,
   );
 
   const acceleration =
@@ -1264,6 +1274,7 @@ function resolveDriverCollisions(
 export function createInitialDrivingState(): DrivingState {
   return {
     elapsedMs: 0,
+    route: "main",
     player: {
       distance: 0,
       lateralPosition: 0,
@@ -1281,7 +1292,7 @@ export function createInitialDrivingState(): DrivingState {
   };
 }
 
-export function stepDriving(
+function stepDrivingCore(
   state: DrivingState,
   input: DrivingInput,
   deltaMs: number,
@@ -1466,12 +1477,67 @@ export function stepDriving(
 
   return {
     elapsedMs: nextElapsedMs,
+    route: state.route,
     player: pickupResult.player,
     aiDrivers: bananaResult.aiDrivers,
     pickups: pickupResult.pickups,
     missiles: missileResult.missiles,
     bananas: bananaResult.bananas,
   };
+}
+
+function enterDrivingSecretRoute(
+  state: DrivingState,
+): DrivingState {
+  const secretEntrySpeed = clamp(
+    Math.abs(state.player.speed) * 0.88,
+    170,
+    DRIVING_MAX_FORWARD_SPEED,
+  );
+
+  return {
+    ...state,
+    route: "secret",
+    player: {
+      ...state.player,
+      distance: 0,
+      lateralPosition: 0,
+      speed: secretEntrySpeed,
+      collisionCooldownMs: 0,
+      spinRemainingMs: 0,
+      heldItem: null,
+      boostRemainingMs: 0,
+      slowdownRemainingMs: 0,
+    },
+    aiDrivers: [],
+    pickups: [],
+    missiles: [],
+    bananas: [],
+  };
+}
+
+export function stepDriving(
+  state: DrivingState,
+  input: DrivingInput,
+  deltaMs: number,
+  sampleCurve: DrivingCurveSampler = () => 0,
+): DrivingState {
+  const nextState = stepDrivingCore(
+    state,
+    input,
+    deltaMs,
+    sampleCurve,
+  );
+
+  const enteredSecretRoute =
+    state.route === "main"
+    && nextState.player.distance
+      <= DRIVING_SECRET_TRIGGER_DISTANCE
+    && nextState.player.speed < 0;
+
+  return enteredSecretRoute
+    ? enterDrivingSecretRoute(nextState)
+    : nextState;
 }
 
 export function isDrivingPlayerOnShoulder(
@@ -1525,14 +1591,19 @@ export function getDrivingRemainingDistance(
   state: DrivingState,
   finishDistance = DRIVING_FINISH_DISTANCE,
 ): number {
-  const safeFinishDistance =
+  const mainFinishDistance =
     Number.isFinite(finishDistance)
       ? finishDistance
       : DRIVING_FINISH_DISTANCE;
 
+  const activeFinishDistance =
+    state.route === "secret"
+      ? DRIVING_SECRET_FINISH_DISTANCE
+      : mainFinishDistance;
+
   return Math.max(
     0,
-    safeFinishDistance - state.player.distance,
+    activeFinishDistance - state.player.distance,
   );
 }
 
@@ -1540,16 +1611,21 @@ export function getDrivingRaceOutcome(
   state: DrivingState,
   finishDistance = DRIVING_FINISH_DISTANCE,
 ): DrivingRaceOutcome {
-  const safeFinishDistance =
+  const mainFinishDistance =
     Number.isFinite(finishDistance)
       ? finishDistance
       : DRIVING_FINISH_DISTANCE;
+
+  const activeFinishDistance =
+    state.route === "secret"
+      ? DRIVING_SECRET_FINISH_DISTANCE
+      : mainFinishDistance;
 
   const firstFinisher = getDrivingStandings(
     state,
   ).find(
     (standing) =>
-      standing.distance >= safeFinishDistance,
+      standing.distance >= activeFinishDistance,
   );
 
   if (firstFinisher === undefined) {

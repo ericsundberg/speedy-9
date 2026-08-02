@@ -160,16 +160,14 @@ function appendGlyph(
       );
       break;
 
-    case "times":
+    case "pace":
       svg.append(
-        createPath("M25 24 L75 72"),
-        createPath("M75 24 L25 72"),
-        createSvgElement("circle", {
-          class: "hub-stage__stroke",
-          cx: 50,
-          cy: 48,
-          r: 31,
-        }),
+        createPath("M28 77 L43 20"),
+        createPath("M72 77 L57 20"),
+        createPath(
+          "M50 77 V65 M50 55 V45 M50 35 V25"
+        ),
+        createPath("M20 78 H80"),
       );
       break;
 

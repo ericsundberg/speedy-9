@@ -50,6 +50,30 @@ describe("driving projection", () => {
     );
   });
 
+  it("contains pronounced sustained curves in both directions", () => {
+    const curves = DRIVING_MAIN_TRACK.segments.map(
+      (segment) => segment.curve,
+    );
+
+    expect(Math.min(...curves)).toBeLessThanOrEqual(-0.42);
+    expect(Math.max(...curves)).toBeGreaterThanOrEqual(0.48);
+
+    const strongLeftCurves = curves.filter(
+      (curve) => curve <= -0.35,
+    );
+
+    const strongRightCurves = curves.filter(
+      (curve) => curve >= 0.35,
+    );
+
+    expect(strongLeftCurves).toHaveLength(38);
+    expect(strongRightCurves).toHaveLength(22);
+    expect(
+      strongLeftCurves.length
+      + strongRightCurves.length,
+    ).toBe(60);
+  });
+
   it("samples negative distances by wrapping", () => {
     const finalSegment =
       DRIVING_MAIN_TRACK.segments.at(-1);

@@ -179,7 +179,7 @@ describe("RunManager", () => {
 
     manager.beginRun(3);
     clock.advance(500);
-    manager.enterStage("times-rush");
+    manager.enterStage("pace-racer");
     clock.advance(750);
     manager.addPenalty(1_000, "Incorrect answer");
 
@@ -196,7 +196,7 @@ describe("RunManager", () => {
     expect(state.run.totalPenaltyMs).toBe(1_000);
     expect(state.run.penalties).toHaveLength(1);
     expect(state.run.penalties[0]).toMatchObject({
-      stageId: "times-rush",
+      stageId: "pace-racer",
       milliseconds: 1_000,
       reason: "Incorrect answer",
     });
@@ -207,7 +207,7 @@ describe("RunManager", () => {
     const manager = new RunManager(clock);
 
     manager.beginRun(4);
-    manager.enterStage("times-rush");
+    manager.enterStage("pace-racer");
     clock.advance(200);
     manager.addPenalty(500, "Incorrect answer");
     manager.completeStage();

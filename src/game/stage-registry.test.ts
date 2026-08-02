@@ -19,7 +19,7 @@ describe("stage registry", () => {
       "tower-climb",
       "vector-maze",
       "memory-burst",
-      "times-rush",
+      "pace-racer",
       "speed-lock",
     ]);
   });

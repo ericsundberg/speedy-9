@@ -8,7 +8,6 @@ import type {
 } from "../shared/stage";
 import {
   createInitialDrivingState,
-  DRIVING_FINISH_DISTANCE,
   DRIVING_VIEW_HEIGHT,
   DRIVING_VIEW_WIDTH,
   getDrivingRacePosition,
@@ -31,6 +30,20 @@ import type {
   ProjectedDrivingRoadPoint,
 } from "./driving-projection";
 import {
+  createDrivingFinishLineView,
+  renderDrivingFinishLineView,
+} from "./driving-finish-render";
+import type {
+  DrivingFinishLineView,
+} from "./driving-finish-render";
+import {
+  createDrivingRoadsideSceneryView,
+  renderDrivingRoadsideSceneryView,
+} from "./driving-roadside-render";
+import type {
+  DrivingRoadsideSceneryView,
+} from "./driving-roadside-render";
+import {
   createDrivingAiCarView,
   createDrivingPlayerCar,
   createDrivingRoadPath,
@@ -52,6 +65,13 @@ const HORIZON_Y = 154;
 const ROAD_BOTTOM_Y = 650;
 const ROAD_FAR_HALF_WIDTH = 50;
 const ROAD_NEAR_HALF_WIDTH = 392;
+const READY_PROMPT_DURATION_MS = 2_000;
+const READY_PROMPT_FLASH_INTERVAL_MS = 220;
+const SECRET_TRACK_DISTANCE_OFFSET = 2_400;
+const SECRET_HORIZON_Y = 206;
+const SECRET_ROAD_BOTTOM_Y = 626;
+const SECRET_ROAD_FAR_HALF_WIDTH = 28;
+const SECRET_ROAD_NEAR_HALF_WIDTH = 268;
 
 const MOVEMENT_KEYS = new Set<string>([
   "KeyW",
@@ -71,8 +91,8 @@ function positiveModulo(
   return ((value % divisor) + divisor) % divisor;
 }
 
-export class TimesRushStage implements Stage {
-  public readonly id = "times-rush" as const;
+export class PaceRacerStage implements Stage {
+  public readonly id = "pace-racer" as const;
 
   private context: StageContext | null = null;
   private state: DrivingState | null = null;
@@ -80,6 +100,9 @@ export class TimesRushStage implements Stage {
   private roadLeft: SVGPathElement | null = null;
   private roadRight: SVGPathElement | null = null;
   private laneMarkers: SVGLineElement[] = [];
+  private finishLineView: DrivingFinishLineView | null = null;
+  private roadsideSceneryView:
+    DrivingRoadsideSceneryView | null = null;
   private playerCar: SVGGElement | null = null;
   private aiCarView: DrivingAiCarView | null = null;
   private itemView: DrivingItemView | null = null;
@@ -87,6 +110,7 @@ export class TimesRushStage implements Stage {
   private positionText: SVGTextElement | null = null;
   private itemText: SVGTextElement | null = null;
   private finishText: SVGTextElement | null = null;
+  private readyPromptText: SVGTextElement | null = null;
   private speedText: SVGTextElement | null = null;
   private distanceText: SVGTextElement | null = null;
   private lateralText: SVGTextElement | null = null;
@@ -170,6 +194,12 @@ export class TimesRushStage implements Stage {
 
     markerLayer.append(...laneMarkers);
 
+    const finishLineView =
+      createDrivingFinishLineView();
+
+    const roadsideSceneryView =
+      createDrivingRoadsideSceneryView();
+
     const aiCarView = createDrivingAiCarView();
     const itemView = createDrivingItemView(
       this.state.pickups,
@@ -188,7 +218,7 @@ export class TimesRushStage implements Stage {
       y: 50,
       "text-anchor": "middle",
     });
-    title.textContent = "FOUR CAR TEST";
+    title.textContent = "PACE RACER";
 
     const positionText = createSvgElement("text", {
       class:
@@ -216,6 +246,17 @@ export class TimesRushStage implements Stage {
       y: 134,
       "text-anchor": "middle",
     });
+
+    const readyPromptText = createSvgElement("text", {
+      class: "driving-stage__ready-prompt",
+      x: DRIVING_VIEW_WIDTH / 2,
+      y: DRIVING_VIEW_HEIGHT / 2,
+      "text-anchor": "middle",
+      "dominant-baseline": "middle",
+      "aria-hidden": "true",
+    });
+
+    readyPromptText.textContent = "READY PLAYER ONE?";
 
     const speedText = createSvgElement("text", {
       class: "driving-stage__readout",
@@ -263,10 +304,13 @@ export class TimesRushStage implements Stage {
       roadLeft,
       roadRight,
       markerLayer,
+      roadsideSceneryView.layer,
+      finishLineView.layer,
       itemView.layer,
       aiCarView.layer,
       playerCar,
       diagnostics,
+      readyPromptText,
     );
 
     const controls = document.createElement("p");
@@ -282,12 +326,15 @@ export class TimesRushStage implements Stage {
     this.roadLeft = roadLeft;
     this.roadRight = roadRight;
     this.laneMarkers = laneMarkers;
+    this.finishLineView = finishLineView;
+    this.roadsideSceneryView = roadsideSceneryView;
     this.playerCar = playerCar;
     this.aiCarView = aiCarView;
     this.itemView = itemView;
     this.positionText = positionText;
     this.itemText = itemText;
     this.finishText = finishText;
+    this.readyPromptText = readyPromptText;
     this.speedText = speedText;
     this.distanceText = distanceText;
     this.lateralText = lateralText;
@@ -397,12 +444,15 @@ export class TimesRushStage implements Stage {
     this.roadLeft = null;
     this.roadRight = null;
     this.laneMarkers = [];
+    this.finishLineView = null;
+    this.roadsideSceneryView = null;
     this.playerCar = null;
     this.aiCarView = null;
     this.itemView = null;
     this.positionText = null;
     this.itemText = null;
     this.finishText = null;
+    this.readyPromptText = null;
     this.speedText = null;
     this.distanceText = null;
     this.lateralText = null;
@@ -515,6 +565,8 @@ export class TimesRushStage implements Stage {
 
     this.lastFrameAtMs = nowMs;
 
+    const routeBeforeStep = this.state.route;
+
     this.state = stepDriving(
       this.state,
       this.readInput(),
@@ -522,7 +574,12 @@ export class TimesRushStage implements Stage {
       (distance) =>
         getDrivingTrackCurveAtDistance(
           DRIVING_MAIN_TRACK,
-          distance,
+          distance
+          + (
+            routeBeforeStep === "secret"
+              ? SECRET_TRACK_DISTANCE_OFFSET
+              : 0
+          ),
         ),
     );
 
@@ -531,8 +588,7 @@ export class TimesRushStage implements Stage {
     this.render();
 
     if (
-      this.state.player.distance
-      >= DRIVING_FINISH_DISTANCE
+      getDrivingRemainingDistance(this.state) <= 0
     ) {
       this.completeRace();
       return;
@@ -548,6 +604,8 @@ export class TimesRushStage implements Stage {
       state === null
       || this.roadLeft === null
       || this.roadRight === null
+      || this.finishLineView === null
+      || this.roadsideSceneryView === null
       || this.playerCar === null
       || this.aiCarView === null
       || this.itemView === null
@@ -555,17 +613,40 @@ export class TimesRushStage implements Stage {
       return;
     }
 
+    const onSecretRoute =
+      state.route === "secret";
+
+    const projectedCameraDistance =
+      state.player.distance
+      + (
+        onSecretRoute
+          ? SECRET_TRACK_DISTANCE_OFFSET
+          : 0
+      );
+
     const projectedRoad = projectDrivingRoad(
       DRIVING_MAIN_TRACK,
       {
-        distance: state.player.distance,
+        distance: projectedCameraDistance,
         lateralPosition:
           state.player.lateralPosition,
         viewWidth: DRIVING_VIEW_WIDTH,
-        horizonY: HORIZON_Y,
-        roadBottomY: ROAD_BOTTOM_Y,
-        nearHalfWidth: ROAD_NEAR_HALF_WIDTH,
-        farHalfWidth: ROAD_FAR_HALF_WIDTH,
+        horizonY:
+          onSecretRoute
+            ? SECRET_HORIZON_Y
+            : HORIZON_Y,
+        roadBottomY:
+          onSecretRoute
+            ? SECRET_ROAD_BOTTOM_Y
+            : ROAD_BOTTOM_Y,
+        nearHalfWidth:
+          onSecretRoute
+            ? SECRET_ROAD_NEAR_HALF_WIDTH
+            : ROAD_NEAR_HALF_WIDTH,
+        farHalfWidth:
+          onSecretRoute
+            ? SECRET_ROAD_FAR_HALF_WIDTH
+            : ROAD_FAR_HALF_WIDTH,
       },
     );
 
@@ -588,26 +669,53 @@ export class TimesRushStage implements Stage {
       projectedRoad,
     );
 
-    renderDrivingItemView(
-      this.itemView,
-      state,
+    renderDrivingRoadsideSceneryView(
+      this.roadsideSceneryView,
       projectedRoad,
-      DRIVING_MAIN_TRACK,
+      projectedCameraDistance,
     );
 
-    renderDrivingAiCarView(
-      this.aiCarView,
-      state,
+    renderDrivingFinishLineView(
+      this.finishLineView,
       projectedRoad,
-      DRIVING_MAIN_TRACK,
+      getDrivingRemainingDistance(state),
     );
+
+    setSvgAttributes(this.itemView.layer, {
+      display: onSecretRoute ? "none" : "",
+    });
+
+    setSvgAttributes(this.aiCarView.layer, {
+      display: onSecretRoute ? "none" : "",
+    });
+
+    if (!onSecretRoute) {
+      renderDrivingItemView(
+        this.itemView,
+        state,
+        projectedRoad,
+        DRIVING_MAIN_TRACK,
+      );
+
+      renderDrivingAiCarView(
+        this.aiCarView,
+        state,
+        projectedRoad,
+        DRIVING_MAIN_TRACK,
+      );
+    }
 
     const input = this.readInput();
 
     const currentCurve =
       getDrivingTrackCurveAtDistance(
         DRIVING_MAIN_TRACK,
-        state.player.distance,
+        state.player.distance
+        + (
+          onSecretRoute
+            ? SECRET_TRACK_DISTANCE_OFFSET
+            : 0
+        ),
       );
 
     renderDrivingPlayerCar(
@@ -624,7 +732,9 @@ export class TimesRushStage implements Stage {
 
     if (this.positionText !== null) {
       this.positionText.textContent =
-        `POS ${getDrivingRacePosition(state)}/4`;
+        onSecretRoute
+          ? "SECRET ROUTE"
+          : `POS ${getDrivingRacePosition(state)}/4`;
     }
 
     if (this.finishText !== null) {
@@ -632,10 +742,34 @@ export class TimesRushStage implements Stage {
         getDrivingRemainingDistance(state),
       );
 
+      const finishLabel =
+        onSecretRoute
+          ? "EXIT"
+          : "FINISH";
+
       this.finishText.textContent =
         remainingDistance > 0
-          ? `FINISH ${remainingDistance}`
-          : "FINISH";
+          ? `${finishLabel} ${remainingDistance}`
+          : finishLabel;
+    }
+
+    if (this.readyPromptText !== null) {
+      const promptActive =
+        state.elapsedMs < READY_PROMPT_DURATION_MS;
+
+      const flashVisible =
+        Math.floor(
+          state.elapsedMs
+          / READY_PROMPT_FLASH_INTERVAL_MS,
+        ) % 2 === 0;
+
+      setSvgAttributes(this.readyPromptText, {
+        display: promptActive ? "" : "none",
+        opacity:
+          promptActive && flashVisible
+            ? 1
+            : 0.22,
+      });
     }
 
     if (this.itemText !== null) {
@@ -680,11 +814,13 @@ export class TimesRushStage implements Stage {
         state.player.slowdownRemainingMs > 0;
 
       this.surfaceText.textContent =
-        slowed
-          ? "CONE SLOW"
-          : onShoulder
-            ? "SHOULDER"
-            : "ON ROAD";
+        onSecretRoute
+          ? "LOW TRACK"
+          : slowed
+            ? "CONE SLOW"
+            : onShoulder
+              ? "SHOULDER"
+              : "ON ROAD";
 
       this.surfaceText.classList.toggle(
         "driving-stage__readout--warning",
@@ -774,6 +910,6 @@ export class TimesRushStage implements Stage {
   }
 }
 
-export function createTimesRushStage(): Stage {
-  return new TimesRushStage();
+export function createPaceRacerStage(): Stage {
+  return new PaceRacerStage();
 }

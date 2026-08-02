@@ -6,7 +6,7 @@ export const PRELIMINARY_STAGE_IDS = [
   "tower-climb",
   "vector-maze",
   "memory-burst",
-  "times-rush",
+  "pace-racer",
 ] as const;
 
 export type PreliminaryStageId =
@@ -91,12 +91,12 @@ export const STAGE_REGISTRY = [
     iconId: "memory-burst",
   },
   {
-    id: "times-rush",
-    shortName: "Times",
-    displayName: "Times Rush",
+    id: "pace-racer",
+    shortName: "Pace",
+    displayName: "Pace Racer",
     kind: "preliminary",
     order: 8,
-    iconId: "times-rush",
+    iconId: "pace-racer",
   },
   {
     id: FINAL_STAGE_ID,

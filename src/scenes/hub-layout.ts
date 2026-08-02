@@ -13,7 +13,7 @@ export type HubGlyphId =
   | "tower"
   | "maze"
   | "memory"
-  | "times"
+  | "pace"
   | "lock";
 
 export interface HubStagePresentation {
@@ -30,7 +30,7 @@ export const HUB_STAGE_ORDER = [
   "tower-climb",
   "vector-maze",
   "memory-burst",
-  "times-rush",
+  "pace-racer",
 ] as const satisfies readonly StageId[];
 
 const HUB_STAGE_PRESENTATIONS: Readonly<
@@ -64,9 +64,9 @@ const HUB_STAGE_PRESENTATIONS: Readonly<
     labelLines: ["MEMORY", "BURST"],
     glyph: "memory",
   },
-  "times-rush": {
-    labelLines: ["TIMES", "RUSH"],
-    glyph: "times",
+  "pace-racer": {
+    labelLines: ["PACE", "RACER"],
+    glyph: "pace",
   },
   "speed-lock": {
     labelLines: ["LOCKED"],

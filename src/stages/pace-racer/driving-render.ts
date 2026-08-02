@@ -226,13 +226,63 @@ export function createDrivingRoadPath(
   points: readonly ProjectedDrivingRoadPoint[],
   edge: "leftX" | "rightX",
 ): string {
-  return points
-    .map((point, index) => (
-      `${index === 0 ? "M" : "L"} `
-      + `${point[edge].toFixed(2)} `
-      + `${point.y.toFixed(2)}`
-    ))
-    .join(" ");
+  const firstPoint = points[0];
+
+  if (firstPoint === undefined) {
+    return "";
+  }
+
+  let path =
+    `M ${firstPoint[edge].toFixed(2)} `
+    + `${firstPoint.y.toFixed(2)}`;
+
+  for (
+    let pointIndex = 0;
+    pointIndex < points.length - 1;
+    pointIndex += 1
+  ) {
+    const current = points[pointIndex];
+    const next = points[pointIndex + 1];
+
+    if (
+      current === undefined
+      || next === undefined
+    ) {
+      continue;
+    }
+
+    const previous =
+      points[pointIndex - 1] ?? current;
+
+    const following =
+      points[pointIndex + 2] ?? next;
+
+    const controlOneX =
+      current[edge]
+      + (next[edge] - previous[edge]) / 6;
+
+    const controlOneY =
+      current.y
+      + (next.y - previous.y) / 6;
+
+    const controlTwoX =
+      next[edge]
+      - (following[edge] - current[edge]) / 6;
+
+    const controlTwoY =
+      next.y
+      - (following.y - current.y) / 6;
+
+    path +=
+      ` C ${controlOneX.toFixed(2)} `
+      + `${controlOneY.toFixed(2)} `
+      + `${controlTwoX.toFixed(2)} `
+      + `${controlTwoY.toFixed(2)} `
+      + `${next[edge].toFixed(2)} `
+      + `${next.y.toFixed(2)}`;
+  }
+
+  return path;
 }
 
 export function renderDrivingPlayerCar(

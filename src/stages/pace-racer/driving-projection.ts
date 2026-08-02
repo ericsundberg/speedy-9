@@ -4,8 +4,8 @@ export const DRIVING_LANE_MARKER_COUNT = 18;
 
 const DEFAULT_ROAD_WIDTH = 1;
 const NEAR_CLIP_DISTANCE = 6;
-const CURVE_ACCELERATION = 0.115;
-const CURVE_SCREEN_SCALE = 5.2;
+const CURVE_ACCELERATION = 0.13;
+const CURVE_SCREEN_SCALE = 5.8;
 
 export interface DrivingTrackSegment {
   readonly index: number;
@@ -57,43 +57,79 @@ export interface ProjectedDrivingObject {
 
 const MAIN_TRACK_SECTIONS: readonly DrivingTrackSection[] = [
   {
-    segmentCount: 18,
+    segmentCount: 14,
     curve: 0,
     elevationDelta: 0,
     width: 1,
   },
   {
-    segmentCount: 24,
-    curve: -0.24,
-    elevationDelta: 0.09,
+    segmentCount: 8,
+    curve: -0.18,
+    elevationDelta: 0.03,
     width: 1,
   },
   {
-    segmentCount: 12,
+    segmentCount: 18,
+    curve: -0.42,
+    elevationDelta: 0.07,
+    width: 1,
+  },
+  {
+    segmentCount: 8,
+    curve: -0.18,
+    elevationDelta: 0.02,
+    width: 1.02,
+  },
+  {
+    segmentCount: 10,
     curve: 0,
-    elevationDelta: -0.14,
+    elevationDelta: -0.12,
     width: 1.04,
   },
   {
-    segmentCount: 28,
-    curve: 0.3,
+    segmentCount: 8,
+    curve: 0.2,
+    elevationDelta: -0.02,
+    width: 1,
+  },
+  {
+    segmentCount: 22,
+    curve: 0.48,
     elevationDelta: 0.04,
     width: 0.94,
   },
   {
-    segmentCount: 14,
-    curve: 0.08,
-    elevationDelta: -0.07,
+    segmentCount: 8,
+    curve: 0.2,
+    elevationDelta: -0.03,
     width: 0.94,
   },
   {
-    segmentCount: 24,
-    curve: -0.18,
+    segmentCount: 12,
+    curve: 0.12,
+    elevationDelta: -0.05,
+    width: 0.98,
+  },
+  {
+    segmentCount: 8,
+    curve: -0.16,
+    elevationDelta: 0,
+    width: 1.04,
+  },
+  {
+    segmentCount: 20,
+    curve: -0.38,
     elevationDelta: 0,
     width: 1.08,
   },
   {
-    segmentCount: 20,
+    segmentCount: 8,
+    curve: -0.14,
+    elevationDelta: 0,
+    width: 1.04,
+  },
+  {
+    segmentCount: 14,
     curve: 0,
     elevationDelta: 0,
     width: 1,
