@@ -1,1 +1,1 @@
-{"root":["./src/main.ts"],"version":"6.0.3"}
+{"root":["./src/main.ts","./src/app/app-controller.ts","./src/app/scene-router.test.ts","./src/app/scene-router.ts","./src/app/scene.ts","./src/scenes/title-scene.ts"],"version":"6.0.3"}

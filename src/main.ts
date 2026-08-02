@@ -1,23 +1,90 @@
-import './style.css';
+import './styles/index.css';
+import { AppController } from './app/app-controller';
 
-const root = document.querySelector<HTMLDivElement>('#app');
+let appController: AppController | null = null;
 
-if (root === null) {
-  throw new Error('Missing #app application root.');
+function requireElement<TElement extends Element>(
+  selector: string,
+): TElement {
+  const element = document.querySelector<TElement>(selector);
+
+  if (element === null) {
+    throw new Error(`Missing required document element: ${selector}`);
+  }
+
+  return element;
 }
 
-const screen = document.createElement('main');
-screen.className = 'bootstrap-screen';
+function describeError(error: unknown): string {
+  if (error instanceof Error) {
+    return error.message;
+  }
 
-const jamLabel = document.createElement('p');
-jamLabel.className = 'bootstrap-screen__eyebrow';
-jamLabel.textContent = 'MICRO JAM 062';
+  return 'An unknown startup error occurred.';
+}
 
-const heading = document.createElement('h1');
-heading.textContent = 'SPEEDY 9';
+function showBootstrapFailure(error: unknown): void {
+  console.error(error);
 
-const status = document.createElement('p');
-status.textContent = 'Project bootstrap complete.';
+  const sceneRoot = document.querySelector<HTMLElement>('#scene-root');
 
-screen.append(jamLabel, heading, status);
-root.append(screen);
+  if (sceneRoot === null) {
+    return;
+  }
+
+  const failure = document.createElement('section');
+  failure.className = 'title-scene';
+  failure.setAttribute('role', 'alert');
+
+  const heading = document.createElement('h1');
+  heading.className = 'title-scene__title';
+  heading.textContent = 'BOOT ERROR';
+
+  const message = document.createElement('p');
+  message.className = 'title-scene__pitch';
+  message.textContent = describeError(error);
+
+  const instruction = document.createElement('p');
+  instruction.className = 'title-scene__weapon-line';
+  instruction.textContent = 'CHECK THE BROWSER CONSOLE';
+
+  failure.append(heading, message, instruction);
+  sceneRoot.replaceChildren(failure);
+}
+
+function bootstrapApplication(): void {
+  try {
+    const sceneRoot =
+      requireElement<HTMLElement>('#scene-root');
+    const runStatus =
+      requireElement<HTMLElement>('#hud-run-status');
+
+    appController?.destroy();
+
+    appController = new AppController({
+      sceneRoot,
+      runStatus,
+    });
+
+    appController.start();
+  } catch (error: unknown) {
+    showBootstrapFailure(error);
+  }
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener(
+    'DOMContentLoaded',
+    bootstrapApplication,
+    { once: true },
+  );
+} else {
+  bootstrapApplication();
+}
+
+if (import.meta.hot !== undefined) {
+  import.meta.hot.dispose(() => {
+    appController?.destroy();
+    appController = null;
+  });
+}

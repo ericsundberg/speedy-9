@@ -1,0 +1,97 @@
+:root {
+  color-scheme: dark;
+  font-family:
+    "Segoe UI",
+    Arial,
+    Helvetica,
+    sans-serif;
+  color: #ffffff;
+  background: #000000;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+
+  --color-page: #000000;
+  --color-shell: #000000;
+  --color-text: #ffffff;
+  --color-text-muted: #a8a8a8;
+  --color-vector: #d8fff0;
+  --color-vector-dim: #4d7568;
+  --color-warning: #f5d66f;
+
+  --livesplit-black: #000000;
+  --livesplit-row-a: #080808;
+  --livesplit-row-b: #151515;
+  --livesplit-border: #292929;
+  --livesplit-blue-top: #397cd6;
+  --livesplit-blue-bottom: #1050a0;
+  --livesplit-green: #2cdb61;
+  --livesplit-red: #e23838;
+  --livesplit-gold: #e5d152;
+
+  --font-display:
+    Workbench,
+    "Arial Narrow",
+    "Roboto Condensed",
+    sans-serif;
+
+  --font-hud:
+    "Segoe UI",
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  --shell-width: 1280px;
+  --hud-width: 284px;
+  --focus-ring: 0 0 0 3px rgb(64 148 255 / 48%);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-width: 320px;
+  min-height: 100%;
+  background: var(--color-page);
+}
+
+body {
+  min-width: 320px;
+  min-height: 100vh;
+  margin: 0;
+  overflow: hidden;
+  background:
+    radial-gradient(
+      circle at 58% 45%,
+      rgb(24 42 36 / 45%),
+      transparent 48%
+    ),
+    var(--color-page);
+}
+
+button,
+summary {
+  font: inherit;
+}
+
+button {
+  color: inherit;
+}
+
+button:focus-visible,
+summary:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.52;
+}
+
+#app {
+  display: grid;
+  min-height: 100vh;
+  place-items: center;
+  padding: clamp(0.35rem, 1.5vw, 1.25rem);
+}
