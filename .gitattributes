@@ -1,0 +1,2 @@
+# The design documents use Markdown trailing spaces as hard line breaks.
+docs/*.md whitespace=-trailing-space
