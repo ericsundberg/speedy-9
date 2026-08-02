@@ -1,0 +1,31 @@
+.game-display {
+  font-family: var(--font-display);
+}
+
+.game-display :where(
+  button,
+  input,
+  textarea,
+  select,
+  summary,
+  p,
+  span,
+  strong,
+  h1,
+  h2,
+  h3,
+  dl,
+  dt,
+  dd,
+  time,
+  output,
+  li
+) {
+  font-family: var(--font-display);
+  font-variation-settings: normal;
+}
+
+.game-display svg text {
+  font-family: var(--font-display);
+  font-variation-settings: normal;
+}

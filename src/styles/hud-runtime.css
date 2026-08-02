@@ -1,0 +1,54 @@
+.hud-status__value[data-run-state="running"],
+.hud-status__value[data-run-state="stage"] {
+  color: var(--livesplit-green);
+}
+
+.hud-status__value[data-run-state="complete"] {
+  color: var(--livesplit-gold);
+}
+
+.livesplit-split--complete .livesplit-split__name,
+.livesplit-split--complete .livesplit-split__time {
+  color: var(--livesplit-green);
+}
+
+.livesplit-split--complete {
+  background:
+    linear-gradient(
+      90deg,
+      rgb(20 76 41 / 34%),
+      var(--livesplit-row-a) 54%
+    );
+}
+
+.livesplit-split--locked {
+  opacity: 0.62;
+}
+
+.livesplit-timer--idle {
+  color: #2cdb61;
+  -webkit-text-fill-color: #2cdb61;
+}
+
+.livesplit-timer--running {
+  color: #2cdb61;
+  text-shadow:
+    0 1px 0 #075020,
+    0 2px 0 #003713,
+    0 0 5px rgb(44 219 97 / 62%);
+  -webkit-text-fill-color: #2cdb61;
+}
+
+.livesplit-timer--complete {
+  color: var(--livesplit-gold);
+  text-shadow:
+    0 1px 0 #5c4b08,
+    0 2px 0 #332700,
+    0 0 5px rgb(229 209 82 / 55%);
+  -webkit-text-fill-color: var(--livesplit-gold);
+}
+
+.livesplit-stat[data-hud-stat="penalties"]
+  .livesplit-stat__value {
+  color: var(--livesplit-red);
+}

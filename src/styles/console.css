@@ -1,0 +1,47 @@
+.game-shell {
+  grid-template-rows: minmax(0, 1fr) auto;
+}
+
+.live-hud {
+  grid-column: 1;
+  grid-row: 1 / 3;
+}
+
+.game-display {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.console-label {
+  display: grid;
+  grid-column: 2;
+  grid-row: 2;
+  min-height: 1.4rem;
+  padding: 0.14rem 0.4rem 0.18rem;
+  place-items: center;
+  border-top: 1px solid #3f4946;
+  background:
+    linear-gradient(
+      180deg,
+      #151a19 0%,
+      #080b0a 100%
+    );
+  color: #d8e0dd;
+  font-family:
+    "Tsukimi Rounded",
+    "Arial Rounded MT Bold",
+    sans-serif;
+  font-size: clamp(0.58rem, 1vw, 0.76rem);
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  line-height: 1;
+  text-shadow: 0 1px 0 #000000;
+}
+
+@media (max-height: 620px) {
+  .console-label {
+    min-height: 1.08rem;
+    padding: 0.08rem 0.3rem 0.1rem;
+    font-size: 0.52rem;
+  }
+}

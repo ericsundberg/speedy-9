@@ -1,0 +1,104 @@
+.hub-stage {
+  border: 0;
+  outline: 0;
+  background: transparent;
+  font: inherit;
+  cursor: pointer;
+}
+
+.hub-stage--final {
+  grid-template-rows: minmax(0, 1fr) auto;
+}
+
+.hub-stage:disabled {
+  cursor: default;
+}
+
+.hub-stage:not(:disabled):hover .hub-stage__portrait-frame,
+.hub-stage:not(:disabled):focus-visible .hub-stage__portrait-frame {
+  border-color: #f0fff9;
+  box-shadow:
+    0 0 8px rgb(216 255 240 / 60%),
+    0 0 18px rgb(87 229 173 / 42%),
+    0 0 12px rgb(87 229 173 / 18%) inset;
+  transform: scale(1.035);
+}
+
+.hub-stage__portrait-frame {
+  transition:
+    border-color 90ms ease,
+    box-shadow 90ms ease,
+    transform 90ms ease;
+}
+
+.hub-stage--complete {
+  opacity: 0.42;
+}
+
+.hub-stage--complete .hub-stage__portrait-frame {
+  border-color: #527267;
+  box-shadow: none;
+}
+
+.hub-stage--complete .hub-stage__portrait-inner::after {
+  position: absolute;
+  z-index: 6;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: #b9d2c8;
+  content: "×";
+  font-size: 2.4rem;
+  line-height: 1;
+  text-shadow: 0 0 8px rgb(185 210 200 / 55%);
+}
+
+.hub-stage--unlocked .hub-stage__portrait-frame {
+  box-shadow:
+    0 0 9px rgb(255 239 146 / 78%),
+    0 0 22px rgb(229 209 82 / 48%),
+    0 0 15px rgb(229 209 82 / 22%) inset;
+}
+
+.hub-stage--unlocked .hub-stage__label {
+  color: #fff6b8;
+  text-shadow:
+    0 1px 0 #000000,
+    0 0 8px rgb(229 209 82 / 52%);
+}
+
+.hub-stage__damage-ring {
+  position: absolute;
+  z-index: 5;
+  inset: -10px;
+  pointer-events: none;
+}
+
+.hub-stage__damage-segment {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 3px;
+  height: 9px;
+  background: #4f4725;
+  box-shadow: 0 0 3px rgb(229 209 82 / 20%);
+  transform:
+    translate(-50%, -50%)
+    rotate(calc(var(--damage-index) * 45deg))
+    translateY(-48px);
+  transform-origin: center;
+}
+
+.hub-stage__damage-segment--complete {
+  background: var(--livesplit-green);
+  box-shadow: 0 0 5px rgb(44 219 97 / 75%);
+}
+
+@media (max-height: 620px) {
+  .hub-stage__damage-segment {
+    transform:
+      translate(-50%, -50%)
+      rotate(calc(var(--damage-index) * 45deg))
+      translateY(-43px);
+  }
+}

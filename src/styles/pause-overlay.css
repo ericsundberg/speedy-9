@@ -1,0 +1,80 @@
+.stage-pause-overlay {
+  position: absolute;
+  z-index: 1000;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: clamp(1rem, 4vw, 3rem);
+  background: rgb(0 0 0 / 88%);
+  pointer-events: auto;
+}
+
+.stage-pause-overlay[hidden] {
+  display: none;
+}
+
+.stage-pause-overlay__panel {
+  display: grid;
+  width: min(30rem, 88%);
+  gap: clamp(1.8rem, 5vh, 3.5rem);
+  padding: clamp(2rem, 6vh, 4rem)
+    clamp(1.5rem, 5vw, 3.5rem);
+  border: 2px solid rgb(255 255 255 / 78%);
+  background: rgb(0 0 0 / 92%);
+  box-shadow:
+    0 0 0 1px rgb(255 255 255 / 18%),
+    0 0 1.4rem rgb(255 255 255 / 18%),
+    inset 0 0 1.2rem rgb(255 255 255 / 8%);
+  text-align: center;
+}
+
+.stage-pause-overlay__title {
+  margin: 0;
+  color: #ffffff;
+  font-family:
+    "Workbench",
+    "Courier New",
+    monospace;
+  font-size: clamp(2.4rem, 7vw, 5rem);
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  line-height: 1;
+  text-shadow:
+    0 0 0.35rem rgb(255 255 255 / 85%),
+    0 0 1rem rgb(255 255 255 / 38%);
+}
+
+.stage-pause-overlay__options {
+  display: grid;
+  justify-items: center;
+  gap: clamp(0.75rem, 2vh, 1.25rem);
+}
+
+.stage-pause-overlay__option {
+  width: 100%;
+  margin: 0;
+  padding: 0.35rem 0.75rem;
+  border: 0;
+  outline: 0;
+  color: rgb(255 255 255 / 58%);
+  background: transparent;
+  font-family:
+    "Workbench",
+    "Courier New",
+    monospace;
+  font-size: clamp(1.2rem, 3vw, 2rem);
+  font-weight: 550;
+  letter-spacing: 0.08em;
+  line-height: 1.25;
+  text-align: center;
+  cursor: pointer;
+}
+
+.stage-pause-overlay__option:hover,
+.stage-pause-overlay__option:focus-visible,
+.stage-pause-overlay__option--selected {
+  color: #ffffff;
+  text-shadow:
+    0 0 0.3rem rgb(255 255 255 / 90%),
+    0 0 0.8rem rgb(255 255 255 / 48%);
+}

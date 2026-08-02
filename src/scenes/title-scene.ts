@@ -1,4 +1,4 @@
-import type { Scene } from '../app/scene';
+import type { Scene } from "../app/scene";
 
 interface TitleSceneOptions {
   onBeginRun(): void;
@@ -15,83 +15,58 @@ export class TitleScene implements Scene {
   public mount(root: HTMLElement): void {
     this.destroy();
 
-    const scene = document.createElement('section');
-    scene.className = 'title-scene';
-    scene.dataset.scene = 'title';
-    scene.setAttribute('aria-labelledby', 'game-title');
+    const scene = document.createElement("section");
+    scene.className = "title-scene";
+    scene.dataset.scene = "title";
+    scene.setAttribute("aria-labelledby", "game-title");
 
-    const headingGroup = document.createElement('div');
-    headingGroup.className = 'title-scene__heading';
+    const title = document.createElement("h1");
+    title.id = "game-title";
+    title.className = "title-scene__title";
+    title.textContent = "SPEEDY 9";
 
-    const jamLabel = document.createElement('p');
-    jamLabel.className = 'title-scene__eyebrow';
-    jamLabel.textContent = 'MICRO JAM 062 · SPEED IS YOUR WEAPON';
+    const actions = document.createElement("div");
+    actions.className = "title-scene__actions";
 
-    const title = document.createElement('h1');
-    title.id = 'game-title';
-    title.className = 'title-scene__title';
-    title.textContent = 'SPEEDY 9';
+    const beginButton = document.createElement("button");
+    beginButton.className =
+      "vector-button vector-button--primary";
+    beginButton.type = "button";
+    beginButton.textContent = "BEGIN RUN";
 
-    const pitch = document.createElement('p');
-    pitch.className = 'title-scene__pitch';
-    pitch.textContent = 'Nine microgames. One relentless clock.';
-
-    const weaponLine = document.createElement('p');
-    weaponLine.className = 'title-scene__weapon-line';
-    weaponLine.textContent = 'YOUR SPEED IS THE WEAPON';
-
-    headingGroup.append(
-      jamLabel,
-      title,
-      pitch,
-      weaponLine,
-    );
-
-    const actions = document.createElement('div');
-    actions.className = 'title-scene__actions';
-
-    const beginButton = document.createElement('button');
-    beginButton.className = 'vector-button vector-button--primary';
-    beginButton.type = 'button';
-    beginButton.textContent = 'BEGIN RUN';
-
-    const audioButton = document.createElement('button');
-    audioButton.className = 'vector-button vector-button--secondary';
-    audioButton.type = 'button';
+    const audioButton = document.createElement("button");
+    audioButton.className =
+      "vector-button vector-button--secondary";
+    audioButton.type = "button";
     audioButton.disabled = true;
-    audioButton.textContent = 'AUDIO: OFFLINE';
-    audioButton.title = 'Audio will be added in a later phase.';
+    audioButton.textContent = "AUDIO: OFFLINE";
+    audioButton.title = "Audio is not yet available.";
 
     actions.append(beginButton, audioButton);
 
-    const information = document.createElement('div');
-    information.className = 'title-scene__information';
+    const information = document.createElement("div");
+    information.className = "title-scene__information";
     information.append(
       this.createControlsPanel(),
       this.createCreditsPanel(),
     );
 
-    const record = document.createElement('p');
-    record.className = 'title-scene__record';
+    const record = document.createElement("p");
+    record.className = "title-scene__record";
 
-    const recordLabel = document.createElement('span');
-    recordLabel.textContent = 'PERSONAL BEST';
+    const recordLabel = document.createElement("span");
+    recordLabel.textContent = "PERSONAL BEST";
 
-    const recordValue = document.createElement('strong');
-    recordValue.textContent = 'NO RECORDED RUN';
+    const recordValue = document.createElement("strong");
+    recordValue.textContent = "NO RECORDED RUN";
 
     record.append(recordLabel, recordValue);
-
-    scene.append(
-      headingGroup,
-      actions,
-      information,
-      record,
-    );
+    scene.append(title, actions, information, record);
 
     this.beginButton = beginButton;
+
     beginButton.addEventListener(
-      'click',
+      "click",
       this.handleBeginRun,
     );
 
@@ -101,7 +76,7 @@ export class TitleScene implements Scene {
 
   public destroy(): void {
     this.beginButton?.removeEventListener(
-      'click',
+      "click",
       this.handleBeginRun,
     );
 
@@ -114,32 +89,32 @@ export class TitleScene implements Scene {
     }
 
     this.beginButton.disabled = true;
-    this.beginButton.textContent = 'RUN SYSTEM PENDING';
+    this.beginButton.textContent = "STARTING";
     this.options.onBeginRun();
   };
 
   private createControlsPanel(): HTMLDetailsElement {
-    const controls = document.createElement('details');
-    controls.className = 'vector-details';
+    const controls = document.createElement("details");
+    controls.className = "vector-details";
 
-    const summary = document.createElement('summary');
-    summary.textContent = 'CONTROLS';
+    const summary = document.createElement("summary");
+    summary.textContent = "CONTROLS";
 
-    const controlsList = document.createElement('dl');
-    controlsList.className = 'controls-list';
+    const controlsList = document.createElement("dl");
+    controlsList.className = "controls-list";
 
     const controlsData: readonly [string, string][] = [
-      ['MOVE / NAVIGATE', 'WASD or Arrow Keys'],
-      ['SELECT / ACTION', 'Enter, Space, or Primary Click'],
-      ['RESTART STAGE', 'R'],
-      ['PAUSE', 'Escape'],
+      ["MOVE / NAVIGATE", "WASD or Arrow Keys"],
+      ["SELECT / ACTION", "Enter, Space, or Primary Click"],
+      ["RESTART STAGE", "R"],
+      ["PAUSE", "Escape"],
     ];
 
     for (const [term, description] of controlsData) {
-      const termElement = document.createElement('dt');
+      const termElement = document.createElement("dt");
       termElement.textContent = term;
 
-      const descriptionElement = document.createElement('dd');
+      const descriptionElement = document.createElement("dd");
       descriptionElement.textContent = description;
 
       controlsList.append(
@@ -153,15 +128,14 @@ export class TitleScene implements Scene {
   }
 
   private createCreditsPanel(): HTMLDetailsElement {
-    const credits = document.createElement('details');
-    credits.className = 'vector-details';
+    const credits = document.createElement("details");
+    credits.className = "vector-details";
 
-    const summary = document.createElement('summary');
-    summary.textContent = 'CREDITS';
+    const summary = document.createElement("summary");
+    summary.textContent = "CREDITS";
 
-    const text = document.createElement('p');
-    text.textContent =
-      'Created for Micro Jam 062 using TypeScript, SVG, and the Web Audio API.';
+    const text = document.createElement("p");
+    text.textContent = "Built with TypeScript, SVG, and Web Audio.";
 
     credits.append(summary, text);
     return credits;

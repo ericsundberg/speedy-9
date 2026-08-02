@@ -1,0 +1,86 @@
+.vector-maze-stage {
+  display: grid;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  grid-template-rows: minmax(0, 1fr) auto;
+  gap: 0.35rem;
+  place-items: center;
+  color: var(--color-vector);
+}
+
+.vector-maze-stage__board {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  overflow: visible;
+}
+
+.vector-maze-stage__walls {
+  filter: drop-shadow(0 0 3px rgb(216 255 240 / 38%));
+}
+
+.vector-maze-stage__wall {
+  fill: #d8fff0;
+}
+
+.vector-maze-stage__start {
+  fill: rgb(2 8 8 / 82%);
+  stroke: #55aaff;
+  stroke-width: 2;
+  stroke-dasharray: 3 3;
+  filter: drop-shadow(0 0 5px rgb(85 170 255 / 72%));
+}
+
+.vector-maze-stage__exit-stem {
+  stroke: var(--color-success);
+  stroke-width: 3;
+  filter: drop-shadow(0 0 5px rgb(94 230 138 / 68%));
+}
+
+.vector-maze-stage__exit {
+  fill: var(--color-success);
+  stroke: #effff4;
+  stroke-width: 2;
+  filter: drop-shadow(0 0 7px rgb(94 230 138 / 78%));
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: vector-maze-exit-pulse 850ms ease-in-out infinite alternate;
+}
+
+.vector-maze-stage__player {
+  fill: #ffffff;
+  stroke: #55aaff;
+  stroke-width: 2;
+  filter:
+    drop-shadow(0 0 3px rgb(255 255 255 / 90%))
+    drop-shadow(0 0 7px rgb(85 170 255 / 74%));
+}
+
+.vector-maze-stage__instruction {
+  margin: 0;
+  color: #9fcabb;
+  font-family: var(--font-hud);
+  font-size: clamp(0.55rem, 1vw, 0.72rem);
+  letter-spacing: 0.08em;
+  text-align: center;
+}
+
+.vector-maze-stage__status {
+  color: var(--color-success);
+}
+
+@keyframes vector-maze-exit-pulse {
+  from {
+    opacity: 0.72;
+    transform: scale(0.92);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1.08);
+  }
+}

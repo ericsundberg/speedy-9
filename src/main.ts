@@ -1,5 +1,5 @@
-import './styles/index.css';
-import { AppController } from './app/app-controller';
+import "./styles/index.css";
+import { AppController } from "./app/app-controller";
 
 let appController: AppController | null = null;
 
@@ -20,33 +20,33 @@ function describeError(error: unknown): string {
     return error.message;
   }
 
-  return 'An unknown startup error occurred.';
+  return "An unknown startup error occurred.";
 }
 
 function showBootstrapFailure(error: unknown): void {
   console.error(error);
 
-  const sceneRoot = document.querySelector<HTMLElement>('#scene-root');
+  const sceneRoot = document.querySelector<HTMLElement>("#scene-root");
 
   if (sceneRoot === null) {
     return;
   }
 
-  const failure = document.createElement('section');
-  failure.className = 'title-scene';
-  failure.setAttribute('role', 'alert');
+  const failure = document.createElement("section");
+  failure.className = "title-scene";
+  failure.setAttribute("role", "alert");
 
-  const heading = document.createElement('h1');
-  heading.className = 'title-scene__title';
-  heading.textContent = 'BOOT ERROR';
+  const heading = document.createElement("h1");
+  heading.className = "title-scene__title";
+  heading.textContent = "BOOT ERROR";
 
-  const message = document.createElement('p');
-  message.className = 'title-scene__pitch';
+  const message = document.createElement("p");
+  message.className = "title-scene__pitch";
   message.textContent = describeError(error);
 
-  const instruction = document.createElement('p');
-  instruction.className = 'title-scene__weapon-line';
-  instruction.textContent = 'CHECK THE BROWSER CONSOLE';
+  const instruction = document.createElement("p");
+  instruction.className = "title-scene__weapon-line";
+  instruction.textContent = "CHECK THE BROWSER CONSOLE";
 
   failure.append(heading, message, instruction);
   sceneRoot.replaceChildren(failure);
@@ -55,15 +55,15 @@ function showBootstrapFailure(error: unknown): void {
 function bootstrapApplication(): void {
   try {
     const sceneRoot =
-      requireElement<HTMLElement>('#scene-root');
-    const runStatus =
-      requireElement<HTMLElement>('#hud-run-status');
+      requireElement<HTMLElement>("#scene-root");
+    const hudRoot =
+      requireElement<HTMLElement>(".live-hud");
 
     appController?.destroy();
 
     appController = new AppController({
       sceneRoot,
-      runStatus,
+      hudRoot,
     });
 
     appController.start();
@@ -72,9 +72,9 @@ function bootstrapApplication(): void {
   }
 }
 
-if (document.readyState === 'loading') {
+if (document.readyState === "loading") {
   document.addEventListener(
-    'DOMContentLoaded',
+    "DOMContentLoaded",
     bootstrapApplication,
     { once: true },
   );

@@ -1,1 +1,198 @@
-<!doctype html> <html lang="en">   <head>     <meta charset="UTF-8">     <meta name="viewport" content="width=device-width, initial-scale=1.0">     <meta name="theme-color" content="#000000">     <meta       name="description"       content="SPEEDY 9 — nine microgames, one relentless clock."     >     <link rel="icon" type="image/svg+xml" href="./favicon.svg">     <title>SPEEDY 9</title>   </head>   <body>     <div id="app">       <main class="game-shell">         <aside class="live-hud" aria-label="Run timing information">           <header class="livesplit-header">             <p class="livesplit-header__game">SPEEDY 9</p>             <p class="livesplit-header__category">               Any% ·               <span id="hud-run-status" class="hud-status__value">READY</span>             </p>           </header>            <ol class="livesplit-splits" aria-label="Stage splits">             <li class="livesplit-split livesplit-split--active">               <span class="livesplit-split__name">Reverse Circuit</span>               <span class="livesplit-split__delta">—</span>               <span class="livesplit-split__time">—</span>             </li>             <li class="livesplit-split">               <span class="livesplit-split__name">Deadeye</span>               <span class="livesplit-split__delta">—</span>               <span class="livesplit-split__time">—</span>             </li>             <li class="livesplit-split">               <span class="livesplit-split__name">Pong Blitz</span>               <span class="livesplit-split__delta">—</span>               <span class="livesplit-split__time">—</span>             </li>             <li class="livesplit-split">               <span class="livesplit-split__name">Pit Sprint</span>               <span class="livesplit-split__delta">—</span>               <span class="livesplit-split__time">—</span>             </li>             <li class="livesplit-split">               <span class="livesplit-split__name">Tower Climb</span>               <span class="livesplit-split__delta">—</span>               <span class="livesplit-split__time">—</span>             </li>             <li class="livesplit-split">               <span class="livesplit-split__name">Vector Maze</span>               <span class="livesplit-split__delta">—</span>               <span class="livesplit-split__time">—</span>             </li>             <li class="livesplit-split">               <span class="livesplit-split__name">Memory Burst</span>               <span class="livesplit-split__delta">—</span>               <span class="livesplit-split__time">—</span>             </li>             <li class="livesplit-split">               <span class="livesplit-split__name">Times Rush</span>               <span class="livesplit-split__delta">—</span>               <span class="livesplit-split__time">—</span>             </li>             <li class="livesplit-split livesplit-split--locked">               <span class="livesplit-split__name">Speed Lock</span>               <span class="livesplit-split__delta">—</span>               <span class="livesplit-split__time">LOCK</span>             </li>           </ol>            <section class="livesplit-timer-panel" aria-label="Current run time">             <div class="livesplit-timer-meta">               <span>PB: —</span>               <span>Best: —</span>             </div>             <time class="livesplit-timer" datetime="PT0S">0:00.000</time>           </section>            <section class="livesplit-stats" aria-label="Run comparisons">             <div class="livesplit-stat">               <span class="livesplit-stat__label">Previous Segment</span>               <span class="livesplit-stat__value">—</span>             </div>             <div class="livesplit-stat">               <span class="livesplit-stat__label">Best Possible Time</span>               <span class="livesplit-stat__value">—</span>             </div>             <div class="livesplit-stat">               <span class="livesplit-stat__label">Sum of Best Segments</span>               <span class="livesplit-stat__value">—</span>             </div>             <div class="livesplit-stat">               <span class="livesplit-stat__label">Comparison</span>               <strong class="livesplit-stat__value">Personal Best</strong>             </div>           </section>         </aside>          <section class="game-display" aria-label="SPEEDY 9 game display">           <svg             class="vector-viewport"             viewBox="0 0 960 720"             preserveAspectRatio="xMidYMid meet"             aria-hidden="true"             focusable="false"           >             <defs>               <filter                 id="vector-glow"                 x="-50%"                 y="-50%"                 width="200%"                 height="200%"               >                 <feGaussianBlur stdDeviation="2" result="blurred"></feGaussianBlur>                 <feMerge>                   <feMergeNode in="blurred"></feMergeNode>                   <feMergeNode in="SourceGraphic"></feMergeNode>                 </feMerge>               </filter>                <pattern                 id="vector-grid"                 width="60"                 height="60"                 patternUnits="userSpaceOnUse"               >                 <path                   d="M 60 0 L 0 0 0 60"                   fill="none"                   stroke="currentColor"                   stroke-width="1"                   vector-effect="non-scaling-stroke"                 ></path>               </pattern>             </defs>              <rect               class="vector-viewport__grid"               width="960"               height="720"               fill="url(#vector-grid)"             ></rect>              <rect               class="vector-viewport__frame"               x="18"               y="18"               width="924"               height="684"               rx="8"               fill="none"               vector-effect="non-scaling-stroke"             ></rect>              <circle               class="vector-viewport__orbit"               cx="480"               cy="360"               r="250"               fill="none"               vector-effect="non-scaling-stroke"             ></circle>              <line               class="vector-viewport__scan"               x1="120"               y1="360"               x2="840"               y2="360"               vector-effect="non-scaling-stroke"             ></line>           </svg>            <div id="scene-root" class="scene-root"></div>         </section>       </main>     </div>      <script type="module" src="/src/main.ts"></script>   </body> </html>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#000000">
+    <meta name="description" content="SPEEDY 9.">
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg">
+    <title>SPEEDY 9</title>
+  </head>
+  <body>
+    <div id="app">
+      <main class="game-shell">
+        <aside class="live-hud" aria-label="Run timing information">
+          <header class="livesplit-header">
+            <p class="livesplit-header__game">SPEEDY 9</p>
+            <p class="livesplit-header__category">
+              Any% ·
+              <span id="hud-run-status" class="hud-status__value">
+                READY
+              </span>
+            </p>
+          </header>
+
+          <ol class="livesplit-splits" aria-label="Stage splits">
+            <li class="livesplit-split livesplit-split--active">
+              <span class="livesplit-split__name">Reverse Circuit</span>
+              <span class="livesplit-split__delta">—</span>
+              <span class="livesplit-split__time">—</span>
+            </li>
+            <li class="livesplit-split">
+              <span class="livesplit-split__name">Deadeye</span>
+              <span class="livesplit-split__delta">—</span>
+              <span class="livesplit-split__time">—</span>
+            </li>
+            <li class="livesplit-split">
+              <span class="livesplit-split__name">Pong Blitz</span>
+              <span class="livesplit-split__delta">—</span>
+              <span class="livesplit-split__time">—</span>
+            </li>
+            <li class="livesplit-split">
+              <span class="livesplit-split__name">Pit Sprint</span>
+              <span class="livesplit-split__delta">—</span>
+              <span class="livesplit-split__time">—</span>
+            </li>
+            <li class="livesplit-split">
+              <span class="livesplit-split__name">Tower Climb</span>
+              <span class="livesplit-split__delta">—</span>
+              <span class="livesplit-split__time">—</span>
+            </li>
+            <li class="livesplit-split">
+              <span class="livesplit-split__name">Vector Maze</span>
+              <span class="livesplit-split__delta">—</span>
+              <span class="livesplit-split__time">—</span>
+            </li>
+            <li class="livesplit-split">
+              <span class="livesplit-split__name">Memory Burst</span>
+              <span class="livesplit-split__delta">—</span>
+              <span class="livesplit-split__time">—</span>
+            </li>
+            <li class="livesplit-split">
+              <span class="livesplit-split__name">Times Rush</span>
+              <span class="livesplit-split__delta">—</span>
+              <span class="livesplit-split__time">—</span>
+            </li>
+            <li class="livesplit-split livesplit-split--locked">
+              <span class="livesplit-split__name">Locked</span>
+              <span class="livesplit-split__delta">—</span>
+              <span class="livesplit-split__time">LOCK</span>
+            </li>
+          </ol>
+
+          <section
+            class="livesplit-timer-panel"
+            aria-label="Current run time"
+          >
+            <div class="livesplit-timer-meta">
+              <span>PB: —</span>
+              <span>Best: —</span>
+            </div>
+            <time class="livesplit-timer" datetime="PT0S">
+              0:00.000
+            </time>
+          </section>
+
+          <section class="livesplit-stats" aria-label="Run comparisons">
+            <div class="livesplit-stat">
+              <span class="livesplit-stat__label">Previous Segment</span>
+              <span class="livesplit-stat__value">—</span>
+            </div>
+            <div class="livesplit-stat">
+              <span class="livesplit-stat__label">Best Possible Time</span>
+              <span class="livesplit-stat__value">—</span>
+            </div>
+            <div class="livesplit-stat">
+              <span class="livesplit-stat__label">
+                Sum of Best Segments
+              </span>
+              <span class="livesplit-stat__value">—</span>
+            </div>
+            <div class="livesplit-stat">
+              <span class="livesplit-stat__label">Comparison</span>
+              <strong class="livesplit-stat__value">Personal Best</strong>
+            </div>
+          </section>
+        </aside>
+
+        <section class="game-display" aria-label="SPEEDY 9 game display">
+          <svg
+            class="vector-viewport"
+            viewBox="0 0 960 720"
+            preserveAspectRatio="xMidYMid meet"
+            aria-hidden="true"
+            focusable="false"
+          >
+            <defs>
+              <filter
+                id="vector-glow"
+                x="-50%"
+                y="-50%"
+                width="200%"
+                height="200%"
+              >
+                <feGaussianBlur
+                  stdDeviation="2"
+                  result="blurred"
+                ></feGaussianBlur>
+                <feMerge>
+                  <feMergeNode in="blurred"></feMergeNode>
+                  <feMergeNode in="SourceGraphic"></feMergeNode>
+                </feMerge>
+              </filter>
+
+              <pattern
+                id="vector-grid"
+                width="60"
+                height="60"
+                patternUnits="userSpaceOnUse"
+              >
+                <path
+                  d="M 60 0 L 0 0 0 60"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1"
+                  vector-effect="non-scaling-stroke"
+                ></path>
+              </pattern>
+            </defs>
+
+            <rect
+              class="vector-viewport__grid"
+              width="960"
+              height="720"
+              fill="url(#vector-grid)"
+            ></rect>
+
+            <rect
+              class="vector-viewport__frame"
+              x="18"
+              y="18"
+              width="924"
+              height="684"
+              rx="8"
+              fill="none"
+              vector-effect="non-scaling-stroke"
+            ></rect>
+
+            <circle
+              class="vector-viewport__orbit"
+              cx="480"
+              cy="360"
+              r="250"
+              fill="none"
+              vector-effect="non-scaling-stroke"
+            ></circle>
+
+            <line
+              class="vector-viewport__scan"
+              x1="120"
+              y1="360"
+              x2="840"
+              y2="360"
+              vector-effect="non-scaling-stroke"
+            ></line>
+          </svg>
+
+          <div id="scene-root" class="scene-root"></div>
+        </section>
+
+        <div class="console-label" aria-label="Console model">
+          VECTAVISION
+        </div>
+      </main>
+    </div>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

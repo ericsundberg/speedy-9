@@ -1,0 +1,626 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
+
+    <title>Music Debug Player</title>
+
+    <style>
+      :root {
+        color-scheme: dark;
+        font-family:
+          Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+          sans-serif;
+        background: #10131a;
+        color: #f4f7ff;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        min-height: 100vh;
+        margin: 0;
+        display: grid;
+        place-items: center;
+        padding: 24px;
+        background:
+          radial-gradient(circle at top, #202944 0%, transparent 45%),
+          #10131a;
+      }
+
+      main {
+        width: min(680px, 100%);
+        padding: 28px;
+        border: 1px solid #3b4564;
+        border-radius: 16px;
+        background: rgba(20, 25, 37, 0.94);
+        box-shadow: 0 24px 80px rgba(0, 0, 0, 0.35);
+      }
+
+      h1 {
+        margin: 0 0 8px;
+        font-size: clamp(1.8rem, 5vw, 2.7rem);
+      }
+
+      .subtitle {
+        margin: 0 0 28px;
+        color: #aab4d0;
+        line-height: 1.5;
+      }
+
+      .field {
+        display: grid;
+        gap: 8px;
+        margin-bottom: 20px;
+      }
+
+      label {
+        font-size: 0.9rem;
+        font-weight: 700;
+        color: #cdd5eb;
+      }
+
+      select,
+      input,
+      button {
+        font: inherit;
+      }
+
+      select {
+        width: 100%;
+        padding: 12px 14px;
+        color: #f4f7ff;
+        background: #171d2c;
+        border: 1px solid #46516f;
+        border-radius: 8px;
+      }
+
+      input[type="range"] {
+        width: 100%;
+      }
+
+      .volume-row {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 16px;
+        align-items: center;
+      }
+
+      .controls {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+        margin: 24px 0;
+      }
+
+      button {
+        min-height: 48px;
+        border: 0;
+        border-radius: 8px;
+        font-weight: 800;
+        cursor: pointer;
+      }
+
+      button:disabled {
+        cursor: not-allowed;
+        opacity: 0.45;
+      }
+
+      #play-button {
+        color: #0e1525;
+        background: #8de8b3;
+      }
+
+      #stop-button {
+        color: #fff;
+        background: #b74757;
+      }
+
+      .status-panel {
+        display: grid;
+        gap: 10px;
+        padding: 16px;
+        border: 1px solid #343d58;
+        border-radius: 10px;
+        background: #111622;
+      }
+
+      .status-row {
+        display: flex;
+        justify-content: space-between;
+        gap: 24px;
+      }
+
+      .status-label {
+        color: #9ea9c6;
+      }
+
+      .status-value {
+        text-align: right;
+        font-variant-numeric: tabular-nums;
+      }
+
+      code {
+        color: #a5f0c5;
+      }
+
+      .instructions {
+        margin-top: 22px;
+        color: #aab4d0;
+        font-size: 0.9rem;
+        line-height: 1.6;
+      }
+
+      .error {
+        color: #ff9ba8;
+      }
+    </style>
+  </head>
+
+  <body>
+    <main>
+      <h1>Music Debug Player</h1>
+
+      <p class="subtitle">
+        Standalone development player for synthesized TypeScript music tracks.
+      </p>
+
+      <div class="field">
+        <label for="track-select">Music track</label>
+        <select id="track-select"></select>
+      </div>
+
+      <div class="field">
+        <div class="volume-row">
+          <label for="volume-control">Master volume</label>
+          <output id="volume-output" for="volume-control">70%</output>
+        </div>
+
+        <input
+          id="volume-control"
+          type="range"
+          min="0"
+          max="1"
+          step="0.01"
+          value="0.7"
+        />
+      </div>
+
+      <div class="controls">
+        <button id="play-button" type="button">Play</button>
+        <button id="stop-button" type="button" disabled>Stop</button>
+      </div>
+
+      <section class="status-panel" aria-live="polite">
+        <div class="status-row">
+          <span class="status-label">Status</span>
+          <strong id="status-value" class="status-value">Ready</strong>
+        </div>
+
+        <div class="status-row">
+          <span class="status-label">Track</span>
+          <span id="track-value" class="status-value">—</span>
+        </div>
+
+        <div class="status-row">
+          <span class="status-label">Tempo</span>
+          <span id="tempo-value" class="status-value">—</span>
+        </div>
+
+        <div class="status-row">
+          <span class="status-label">Position</span>
+          <span id="position-value" class="status-value">0.0 s</span>
+        </div>
+
+        <div class="status-row">
+          <span class="status-label">Loop length</span>
+          <span id="length-value" class="status-value">—</span>
+        </div>
+      </section>
+
+      <p class="instructions">
+        Run the project with <code>npm run dev</code>, then open
+        <code>/music-debug.html</code>. This page will not work correctly when
+        opened directly through a <code>file://</code> URL.
+      </p>
+    </main>
+
+    <script type="module">
+import { ODE_TO_JOY_TRACK } from "/src/music/ode-to-joy.ts";
+import { HAPPY_FARMER_TRACK } from "/src/music/happy-farmer.ts";
+import { BEETHOVEN_FIFTH_TRACK } from "/src/music/beethoven-fifth.ts";
+import { VIVALDI_WINTER_TRACK } from "/src/music/vivaldi-winter.ts";
+import { WILLIAM_TELL_OVERTURE_TRACK } from "/src/music/william-tell-overture.ts";
+import {
+  ENTRY_OF_THE_GLADIATORS_TRACK,
+} from "/src/music/entry-of-the-gladiators.ts";
+
+const TRACKS = [
+  ODE_TO_JOY_TRACK,
+  HAPPY_FARMER_TRACK,
+  BEETHOVEN_FIFTH_TRACK,
+  VIVALDI_WINTER_TRACK,
+  WILLIAM_TELL_OVERTURE_TRACK,
+  ENTRY_OF_THE_GLADIATORS_TRACK,
+];
+
+      const LOOKAHEAD_SECONDS = 0.15;
+      const SCHEDULER_INTERVAL_MS = 50;
+      const START_DELAY_SECONDS = 0.05;
+
+      const trackSelect = document.querySelector("#track-select");
+      const playButton = document.querySelector("#play-button");
+      const stopButton = document.querySelector("#stop-button");
+      const volumeControl = document.querySelector("#volume-control");
+      const volumeOutput = document.querySelector("#volume-output");
+
+      const statusValue = document.querySelector("#status-value");
+      const trackValue = document.querySelector("#track-value");
+      const tempoValue = document.querySelector("#tempo-value");
+      const positionValue = document.querySelector("#position-value");
+      const lengthValue = document.querySelector("#length-value");
+
+      let audioContext = null;
+      let masterGain = null;
+      let schedulerId = null;
+      let animationFrameId = null;
+
+      let activeTrack = null;
+      let sortedNotes = [];
+      let scheduledSources = new Set();
+
+      let playbackStartTime = 0;
+      let nextNoteIndex = 0;
+      let currentLoopIndex = 0;
+      let isPlaying = false;
+
+      function getSelectedTrack() {
+        const selectedId = trackSelect.value;
+
+        return (
+          TRACKS.find((track) => track.id === selectedId) ??
+          TRACKS[0] ??
+          null
+        );
+      }
+
+      function beatsToSeconds(beats, tempoBpm) {
+        return beats * (60 / tempoBpm);
+      }
+
+      function getTrackLengthSeconds(track) {
+        return beatsToSeconds(track.lengthBeats, track.tempoBpm);
+      }
+
+      function setStatus(message, isError = false) {
+        statusValue.textContent = message;
+        statusValue.classList.toggle("error", isError);
+      }
+
+      function updateTrackInformation() {
+        const track = getSelectedTrack();
+
+        if (!track) {
+          trackValue.textContent = "No tracks registered";
+          tempoValue.textContent = "—";
+          lengthValue.textContent = "—";
+          return;
+        }
+
+        const lengthSeconds = getTrackLengthSeconds(track);
+
+        trackValue.textContent = `${track.title} — ${track.composer}`;
+        tempoValue.textContent = `${track.tempoBpm} BPM`;
+        lengthValue.textContent = `${lengthSeconds.toFixed(2)} s`;
+      }
+
+      function populateTrackSelector() {
+        trackSelect.replaceChildren();
+
+        for (const track of TRACKS) {
+          const option = document.createElement("option");
+
+          option.value = track.id;
+          option.textContent = `${track.title} — ${track.composer}`;
+
+          trackSelect.append(option);
+        }
+
+        const hasTracks = TRACKS.length > 0;
+
+        playButton.disabled = !hasTracks;
+        trackSelect.disabled = !hasTracks;
+
+        updateTrackInformation();
+      }
+
+      async function ensureAudioContext() {
+        if (!audioContext) {
+          audioContext = new AudioContext();
+
+          masterGain = audioContext.createGain();
+          masterGain.gain.value = Number(volumeControl.value);
+          masterGain.connect(audioContext.destination);
+        }
+
+        if (audioContext.state === "suspended") {
+          await audioContext.resume();
+        }
+      }
+
+      function scheduleNote(note, absoluteStartTime, tempoBpm) {
+        if (!audioContext || !masterGain) {
+          return;
+        }
+
+        const oscillator = audioContext.createOscillator();
+        const noteGain = audioContext.createGain();
+
+        const durationSeconds = Math.max(
+          0.01,
+          beatsToSeconds(note.durationBeats, tempoBpm),
+        );
+
+        const attackSeconds = Math.max(0, note.attackSeconds ?? 0.005);
+        const releaseSeconds = Math.max(0.005, note.releaseSeconds ?? 0.03);
+
+        const noteEndTime = absoluteStartTime + durationSeconds;
+        const releaseStartTime = Math.max(
+          absoluteStartTime,
+          noteEndTime - releaseSeconds,
+        );
+
+        oscillator.type = note.waveform;
+        oscillator.frequency.setValueAtTime(
+          note.frequencyHz,
+          absoluteStartTime,
+        );
+
+        if (
+          typeof note.endFrequencyHz === "number" &&
+          note.endFrequencyHz > 0
+        ) {
+          oscillator.frequency.linearRampToValueAtTime(
+            note.endFrequencyHz,
+            noteEndTime,
+          );
+        }
+
+        noteGain.gain.setValueAtTime(0.0001, absoluteStartTime);
+        noteGain.gain.linearRampToValueAtTime(
+          Math.max(0.0001, note.gain),
+          absoluteStartTime + attackSeconds,
+        );
+        noteGain.gain.setValueAtTime(
+          Math.max(0.0001, note.gain),
+          releaseStartTime,
+        );
+        noteGain.gain.exponentialRampToValueAtTime(0.0001, noteEndTime);
+
+        oscillator.connect(noteGain);
+        noteGain.connect(masterGain);
+
+        oscillator.start(absoluteStartTime);
+        oscillator.stop(noteEndTime + 0.01);
+
+        scheduledSources.add(oscillator);
+
+        oscillator.addEventListener(
+          "ended",
+          () => {
+            oscillator.disconnect();
+            noteGain.disconnect();
+            scheduledSources.delete(oscillator);
+          },
+          { once: true },
+        );
+      }
+
+      function scheduleUpcomingNotes() {
+        if (!isPlaying || !audioContext || !activeTrack) {
+          return;
+        }
+
+        const currentTime = audioContext.currentTime;
+        const scheduleHorizon = currentTime + LOOKAHEAD_SECONDS;
+        const trackLengthSeconds = getTrackLengthSeconds(activeTrack);
+
+        while (isPlaying) {
+          if (nextNoteIndex >= sortedNotes.length) {
+            if (!activeTrack.loop) {
+              const trackEndTime =
+                playbackStartTime +
+                trackLengthSeconds * (currentLoopIndex + 1);
+
+              if (currentTime >= trackEndTime) {
+                stopPlayback("Finished");
+              }
+
+              return;
+            }
+
+            nextNoteIndex = 0;
+            currentLoopIndex += 1;
+          }
+
+          const note = sortedNotes[nextNoteIndex];
+
+          if (!note) {
+            return;
+          }
+
+          const noteOffsetSeconds = beatsToSeconds(
+            note.startBeat,
+            activeTrack.tempoBpm,
+          );
+
+          const absoluteStartTime =
+            playbackStartTime +
+            currentLoopIndex * trackLengthSeconds +
+            noteOffsetSeconds;
+
+          if (absoluteStartTime > scheduleHorizon) {
+            return;
+          }
+
+          if (absoluteStartTime >= currentTime - 0.02) {
+            scheduleNote(
+              note,
+              absoluteStartTime,
+              activeTrack.tempoBpm,
+            );
+          }
+
+          nextNoteIndex += 1;
+        }
+      }
+
+      function updatePlaybackDisplay() {
+        if (!isPlaying || !audioContext || !activeTrack) {
+          return;
+        }
+
+        const elapsedSeconds = Math.max(
+          0,
+          audioContext.currentTime - playbackStartTime,
+        );
+
+        const trackLengthSeconds = getTrackLengthSeconds(activeTrack);
+
+        const displayedPosition = activeTrack.loop
+          ? elapsedSeconds % trackLengthSeconds
+          : Math.min(elapsedSeconds, trackLengthSeconds);
+
+        positionValue.textContent =
+          `${displayedPosition.toFixed(2)} s / ` +
+          `${trackLengthSeconds.toFixed(2)} s`;
+
+        animationFrameId = requestAnimationFrame(updatePlaybackDisplay);
+      }
+
+      async function startPlayback() {
+        const track = getSelectedTrack();
+
+        if (!track || track.notes.length === 0) {
+          setStatus("Track contains no notes", true);
+          return;
+        }
+
+        stopPlayback();
+
+        try {
+          await ensureAudioContext();
+
+          activeTrack = track;
+          sortedNotes = [...track.notes].sort(
+            (left, right) => left.startBeat - right.startBeat,
+          );
+
+          playbackStartTime =
+            audioContext.currentTime + START_DELAY_SECONDS;
+
+          nextNoteIndex = 0;
+          currentLoopIndex = 0;
+          isPlaying = true;
+
+          playButton.disabled = true;
+          stopButton.disabled = false;
+          trackSelect.disabled = true;
+
+          setStatus(track.loop ? "Playing — loop enabled" : "Playing");
+
+          scheduleUpcomingNotes();
+
+          schedulerId = window.setInterval(
+            scheduleUpcomingNotes,
+            SCHEDULER_INTERVAL_MS,
+          );
+
+          animationFrameId = requestAnimationFrame(
+            updatePlaybackDisplay,
+          );
+        } catch (error) {
+          console.error(error);
+          stopPlayback("Audio startup failed");
+          setStatus("Audio startup failed", true);
+        }
+      }
+
+      function stopPlayback(finalStatus = "Stopped") {
+        isPlaying = false;
+
+        if (schedulerId !== null) {
+          window.clearInterval(schedulerId);
+          schedulerId = null;
+        }
+
+        if (animationFrameId !== null) {
+          cancelAnimationFrame(animationFrameId);
+          animationFrameId = null;
+        }
+
+        for (const source of scheduledSources) {
+          try {
+            source.stop();
+          } catch {
+            // The source may already have ended.
+          }
+
+          try {
+            source.disconnect();
+          } catch {
+            // The source may already be disconnected.
+          }
+        }
+
+        scheduledSources.clear();
+
+        activeTrack = null;
+        sortedNotes = [];
+        nextNoteIndex = 0;
+        currentLoopIndex = 0;
+
+        playButton.disabled = TRACKS.length === 0;
+        stopButton.disabled = true;
+        trackSelect.disabled = TRACKS.length === 0;
+
+        positionValue.textContent = "0.0 s";
+
+        if (finalStatus) {
+          setStatus(finalStatus);
+        }
+      }
+
+      volumeControl.addEventListener("input", () => {
+        const volume = Number(volumeControl.value);
+
+        volumeOutput.value = `${Math.round(volume * 100)}%`;
+
+        if (audioContext && masterGain) {
+          masterGain.gain.setTargetAtTime(
+            volume,
+            audioContext.currentTime,
+            0.015,
+          );
+        }
+      });
+
+      trackSelect.addEventListener("change", updateTrackInformation);
+      playButton.addEventListener("click", startPlayback);
+      stopButton.addEventListener("click", () => stopPlayback());
+
+      window.addEventListener("beforeunload", () => {
+        stopPlayback("");
+        audioContext?.close();
+      });
+
+      populateTrackSelector();
+    </script>
+  </body>
+</html>

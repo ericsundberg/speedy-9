@@ -1,0 +1,318 @@
+.scene-root:has(> .hub-scene) {
+  padding: clamp(0.55rem, 1.8vh, 0.9rem)
+    clamp(0.3rem, 1vw, 0.65rem);
+}
+
+.hub-scene {
+  display: grid;
+  width: min(100%, 420px);
+  height: auto;
+  min-height: 0;
+  grid-template-rows: auto auto;
+  gap: clamp(0.45rem, 1.35vh, 0.72rem);
+  place-self: center;
+  place-items: center;
+  overflow: visible;
+  color: var(--color-vector);
+}
+
+.hub-scene__title {
+  margin: 0;
+  padding: 0.14em 0 0.04em;
+  overflow: visible;
+  color: #eefff8;
+  font-family: var(--font-display);
+  font-size: clamp(1.55rem, 3.6vw, 2.35rem);
+  font-variation-settings: normal;
+  font-weight: 400;
+  letter-spacing: 0.11em;
+  line-height: 1;
+  text-align: center;
+  text-shadow:
+    0 0 5px rgb(216 255 240 / 78%),
+    0 0 15px rgb(89 225 173 / 30%);
+}
+
+.hub-grid {
+  display: grid;
+  width: min(100%, 390px, 68vh);
+  aspect-ratio: 1;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-rows: repeat(3, minmax(0, 1fr));
+  gap: clamp(0.16rem, 0.55vmin, 0.3rem);
+  place-self: center;
+}
+
+.hub-stage {
+  display: grid;
+  min-width: 0;
+  min-height: 0;
+  grid-template-rows: minmax(0, 1fr) auto;
+  align-items: end;
+  justify-items: center;
+  padding: 0;
+  color: #a9f5d8;
+}
+
+.hub-stage--final {
+  grid-template-rows: minmax(0, 1fr) auto auto;
+  color: var(--livesplit-gold);
+}
+
+.hub-stage__portrait-frame {
+  position: relative;
+  display: grid;
+  align-self: center;
+  width: min(82%, 5.8rem);
+  aspect-ratio: 1;
+  place-items: center;
+  border: 2px solid currentColor;
+  background:
+    linear-gradient(
+      135deg,
+      rgb(123 255 206 / 10%),
+      transparent 42%
+    ),
+    rgb(1 9 7 / 92%);
+  box-shadow:
+    0 0 8px rgb(87 229 173 / 18%),
+    0 0 0 1px rgb(0 0 0 / 75%),
+    0 0 8px rgb(87 229 173 / 9%) inset;
+}
+
+.hub-stage__portrait-frame::before,
+.hub-stage__portrait-frame::after {
+  position: absolute;
+  z-index: 2;
+  pointer-events: none;
+  content: "";
+}
+
+.hub-stage__portrait-frame::before {
+  inset: 4px;
+  border: 1px solid rgb(199 255 234 / 38%);
+}
+
+.hub-stage__portrait-frame::after {
+  top: 50%;
+  right: -4px;
+  left: -4px;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.35;
+}
+
+.hub-stage--final .hub-stage__portrait-frame {
+  border-color: var(--livesplit-gold);
+  background:
+    repeating-linear-gradient(
+      -45deg,
+      rgb(229 209 82 / 7%) 0,
+      rgb(229 209 82 / 7%) 5px,
+      transparent 5px,
+      transparent 10px
+    ),
+    #070701;
+  box-shadow:
+    0 0 10px rgb(229 209 82 / 24%),
+    0 0 0 1px #000000,
+    0 0 12px rgb(229 209 82 / 10%) inset;
+}
+
+.hub-stage__portrait-inner {
+  position: absolute;
+  inset: 8px;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border: 1px solid rgb(142 222 192 / 22%);
+  background:
+    radial-gradient(
+      circle at 50% 42%,
+      rgb(60 137 107 / 18%),
+      transparent 68%
+    ),
+    #010504;
+}
+
+.hub-stage--final .hub-stage__portrait-inner {
+  border-color: rgb(229 209 82 / 24%);
+  background:
+    radial-gradient(
+      circle,
+      rgb(125 99 16 / 19%),
+      transparent 68%
+    ),
+    #050500;
+}
+
+.hub-stage__corner {
+  position: absolute;
+  z-index: 4;
+  width: 9px;
+  height: 9px;
+  border: 2px solid currentColor;
+  border-radius: 50%;
+  background: #010504;
+  box-shadow: 0 0 4px currentColor;
+}
+
+.hub-stage__corner--top-left {
+  top: -6px;
+  left: -6px;
+}
+
+.hub-stage__corner--top-right {
+  top: -6px;
+  right: -6px;
+}
+
+.hub-stage__corner--bottom-left {
+  bottom: -6px;
+  left: -6px;
+}
+
+.hub-stage__corner--bottom-right {
+  right: -6px;
+  bottom: -6px;
+}
+
+.hub-stage--final .hub-stage__corner {
+  background: #050500;
+}
+
+.hub-stage__graphic {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  color: currentColor;
+  filter: drop-shadow(0 0 3px currentColor);
+}
+
+.hub-stage__graphic-backdrop {
+  fill: rgb(88 215 166 / 5%);
+  stroke: rgb(164 255 220 / 13%);
+  stroke-width: 1;
+}
+
+.hub-stage--final .hub-stage__graphic-backdrop {
+  fill: rgb(229 209 82 / 4%);
+  stroke: rgb(229 209 82 / 15%);
+}
+
+.hub-stage__stroke {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 3.25;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.hub-stage__fill {
+  fill: currentColor;
+  fill-opacity: 0.16;
+  stroke: currentColor;
+  stroke-width: 2.5;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.hub-stage__node {
+  fill: #010504;
+  stroke: currentColor;
+  stroke-width: 2.75;
+  vector-effect: non-scaling-stroke;
+}
+
+.hub-stage--final .hub-stage__node {
+  fill: #050500;
+}
+
+.hub-stage__graphic-index {
+  fill: currentColor;
+  font-family: var(--font-hud);
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  opacity: 0.58;
+}
+
+.hub-stage__label {
+  display: grid;
+  align-self: end;
+  margin-top: 0.03rem;
+  color: #e9fff7;
+  font-family: var(--font-display);
+  font-size: clamp(0.67rem, 1.65vw, 0.9rem);
+  font-variation-settings: normal;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  line-height: 0.76;
+  text-align: center;
+  text-shadow:
+    0 1px 0 #000000,
+    0 0 5px rgb(177 255 226 / 25%);
+}
+
+.hub-stage--final .hub-stage__label {
+  color: #fff3ac;
+}
+
+.hub-stage__label-line {
+  display: block;
+}
+
+.hub-stage__lock-state {
+  margin-top: 0.04rem;
+  color: #8d7d3d;
+  font-family: var(--font-display);
+  font-size: clamp(0.5rem, 1vw, 0.65rem);
+  font-variation-settings: normal;
+  font-weight: 400;
+  letter-spacing: 0.14em;
+  line-height: 0.85;
+}
+
+.hub-stage--locked .hub-stage__graphic {
+  opacity: 0.72;
+}
+
+.hub-stage--locked .hub-stage__portrait-inner {
+  filter: contrast(0.85);
+}
+
+@media (max-height: 620px) {
+  .scene-root:has(> .hub-scene) {
+    padding: 0.4rem 0.35rem;
+  }
+
+  .hub-scene {
+    width: min(100%, 395px);
+    gap: 0.38rem;
+  }
+
+  .hub-scene__title {
+    padding-top: 0.16em;
+    font-size: 1.85rem;
+    line-height: 1;
+  }
+
+  .hub-grid {
+    width: min(100%, 360px, 66vh);
+    gap: 0.16rem;
+  }
+
+  .hub-stage__portrait-frame {
+    width: min(82%, 5.05rem);
+  }
+
+  .hub-stage__label {
+    font-size: 0.68rem;
+  }
+
+  .hub-stage__lock-state {
+    font-size: 0.5rem;
+  }
+}
