@@ -683,7 +683,13 @@ export class PitfallRunStage implements Stage {
 
       elements.push(
         this.path(
-          "M290 84 Q390 44 488 84",
+          "M290 84 "
+          + "L318 70 "
+          + "L348 76 "
+          + "L390 56 "
+          + "L432 76 "
+          + "L462 70 "
+          + "L488 84",
           "pitfall-stage__branch",
         ),
         this.line(
@@ -700,8 +706,38 @@ export class PitfallRunStage implements Stage {
           r: 5,
         }),
         this.path(
-          "M242 390 Q380 442 518 390",
+          "M242 390 "
+          + "L270 400 "
+          + "L300 410 "
+          + "L330 418 "
+          + "L360 424 "
+          + "L390 428 "
+          + "L420 424 "
+          + "L450 418 "
+          + "L480 410 "
+          + "L505 400 "
+          + "L518 390",
           "pitfall-stage__pit",
+        ),
+        this.path(
+          "M270 400 L270 440 "
+          + "M310 412 L310 450 "
+          + "M350 422 L350 456 "
+          + "M390 428 L390 460 "
+          + "M430 422 L430 456 "
+          + "M470 412 L470 450 "
+          + "M505 400 L505 440",
+          "pitfall-stage__pit-depth",
+        ),
+        this.path(
+          "M270 440 "
+          + "L310 450 "
+          + "L350 456 "
+          + "L390 460 "
+          + "L430 456 "
+          + "L470 450 "
+          + "L505 440",
+          "pitfall-stage__pit-floor",
         ),
       );
     }

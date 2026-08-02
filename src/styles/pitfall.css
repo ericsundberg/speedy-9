@@ -26,6 +26,8 @@
 .pitfall-stage__ground,
 .pitfall-stage__branch,
 .pitfall-stage__pit,
+.pitfall-stage__pit-depth,
+.pitfall-stage__pit-floor,
 .pitfall-stage__water,
 .pitfall-stage__crocodile,
 .pitfall-stage__crocodile-teeth,
@@ -62,7 +64,17 @@
 
 .pitfall-stage__pit {
   stroke-width: 1.8;
-  opacity: 0.58;
+  opacity: 0.72;
+}
+
+.pitfall-stage__pit-depth {
+  stroke-width: 1.15;
+  opacity: 0.36;
+}
+
+.pitfall-stage__pit-floor {
+  stroke-width: 1.3;
+  opacity: 0.42;
 }
 
 .pitfall-stage__water {
@@ -240,6 +252,10 @@
 
 .pitfall-stage__canopy,
 .pitfall-stage__tree,
+.pitfall-stage__branch,
+.pitfall-stage__pit,
+.pitfall-stage__pit-depth,
+.pitfall-stage__pit-floor,
 .pitfall-stage__log,
 .pitfall-stage__log-spoke,
 .pitfall-stage__scorpion {
