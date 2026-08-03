@@ -39,6 +39,15 @@ describe("hub stage presentation", () => {
     }
   });
 
+  it("uses the Tic Tac Toe hub presentation", () => {
+    expect(
+      getHubStagePresentation("tower-climb"),
+    ).toEqual({
+      labelLines: ["TIC TAC", "TOE"],
+      glyph: "tic-tac-toe",
+    });
+  });
+
   it("uses only Locked as the visible final-stage label", () => {
     expect(
       getHubStagePresentation(FINAL_STAGE_ID).labelLines,

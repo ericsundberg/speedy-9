@@ -130,6 +130,34 @@ function appendGlyph(
       );
       break;
 
+    case "tic-tac-toe":
+      svg.append(
+        createPath(
+          "M35 16 V84 "
+          + "M65 16 V84 "
+          + "M16 35 H84 "
+          + "M16 65 H84",
+        ),
+
+        createPath(
+          "M21 21 L31 31 "
+          + "M31 21 L21 31",
+        ),
+
+        createSvgElement("circle", {
+          class: "hub-stage__stroke",
+          cx: 50,
+          cy: 50,
+          r: 9,
+        }),
+
+        createPath(
+          "M69 69 L79 79 "
+          + "M79 69 L69 79",
+        ),
+      );
+      break;
+
     case "tower":
       svg.append(
         createSvgElement("path", {

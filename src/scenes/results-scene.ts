@@ -2,6 +2,9 @@ import type {
   Scene,
 } from "../app/scene";
 import {
+  formatMenuOptionLabel,
+} from "./menu-option";
+import {
   formatDurationMs,
 } from "../core/time-format";
 import {
@@ -63,9 +66,13 @@ export class ResultsScene implements Scene {
 
     const newRunButton = document.createElement("button");
     newRunButton.className =
-      "vector-button vector-button--primary";
+      "menu-option menu-option--selected";
     newRunButton.type = "button";
-    newRunButton.textContent = "NEW RUN";
+    newRunButton.textContent =
+      formatMenuOptionLabel(
+        "NEW RUN",
+        true,
+      );
     newRunButton.addEventListener(
       "click",
       this.handleNewRun,

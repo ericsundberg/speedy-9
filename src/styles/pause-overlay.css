@@ -52,29 +52,4 @@
 
 .stage-pause-overlay__option {
   width: 100%;
-  margin: 0;
-  padding: 0.35rem 0.75rem;
-  border: 0;
-  outline: 0;
-  color: rgb(255 255 255 / 58%);
-  background: transparent;
-  font-family:
-    "Workbench",
-    "Courier New",
-    monospace;
-  font-size: clamp(1.2rem, 3vw, 2rem);
-  font-weight: 550;
-  letter-spacing: 0.08em;
-  line-height: 1.25;
-  text-align: center;
-  cursor: pointer;
-}
-
-.stage-pause-overlay__option:hover,
-.stage-pause-overlay__option:focus-visible,
-.stage-pause-overlay__option--selected {
-  color: #ffffff;
-  text-shadow:
-    0 0 0.3rem rgb(255 255 255 / 90%),
-    0 0 0.8rem rgb(255 255 255 / 48%);
 }

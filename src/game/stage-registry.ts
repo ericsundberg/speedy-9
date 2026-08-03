@@ -68,11 +68,11 @@ export const STAGE_REGISTRY = [
   },
   {
     id: "tower-climb",
-    shortName: "Tower",
-    displayName: "Tower Climb",
+    shortName: "Tic Tac",
+    displayName: "Tic Tac Toe",
     kind: "preliminary",
     order: 5,
-    iconId: "tower-climb",
+    iconId: "tic-tac-toe",
   },
   {
     id: "vector-maze",

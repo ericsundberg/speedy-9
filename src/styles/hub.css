@@ -316,3 +316,27 @@
     font-size: 0.5rem;
   }
 }
+
+/* STAGE SELECT LINE HEIGHT START */
+.hub-stage__label {
+  line-height: 1.08;
+}
+
+.hub-stage__label-line + .hub-stage__label-line {
+  margin-top: 0.12em;
+}
+
+.hub-stage__lock-state {
+  line-height: 1.08;
+}
+
+@media (max-height: 620px) {
+  .hub-stage__label {
+    line-height: 1.12;
+  }
+
+  .hub-stage__label-line + .hub-stage__label-line {
+    margin-top: 0.14em;
+  }
+}
+/* STAGE SELECT LINE HEIGHT END */

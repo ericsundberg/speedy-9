@@ -37,6 +37,8 @@ export class MenuSoundController {
 
   private started = false;
   private keyboardMovePending = false;
+  private titleBootPending = false;
+  private suppressSelectUntilMs = 0;
 
   private pointerInteractive:
     HTMLElement | null = null;
@@ -64,6 +66,12 @@ export class MenuSoundController {
     );
 
     this.root.addEventListener(
+      "pointerdown",
+      this.handlePointerDown,
+      true,
+    );
+
+    this.root.addEventListener(
       "focusin",
       this.handleFocusIn,
     );
@@ -80,6 +88,38 @@ export class MenuSoundController {
     );
   }
 
+  public startStageSelectMusic(
+    delaySeconds = 0.04,
+  ): void {
+    if (!this.started) {
+      return;
+    }
+
+    this.audio.playStageSelectMusic(delaySeconds);
+  }
+
+  public startRunCompleteMusic(
+    delaySeconds = 0.08,
+  ): void {
+    if (!this.started) {
+      return;
+    }
+
+    this.audio.playRunCompleteMusic(delaySeconds);
+  }
+
+  public stopMusic(): void {
+    this.audio.stopMusic();
+  }
+
+  public queueTitleBoot(): void {
+    if (!this.started) {
+      return;
+    }
+
+    this.titleBootPending = true;
+  }
+
   public destroy(): void {
     if (!this.started) {
       return;
@@ -90,6 +130,12 @@ export class MenuSoundController {
     window.removeEventListener(
       "keydown",
       this.handleKeyDown,
+      true,
+    );
+
+    this.root.removeEventListener(
+      "pointerdown",
+      this.handlePointerDown,
       true,
     );
 
@@ -110,6 +156,8 @@ export class MenuSoundController {
     );
 
     this.keyboardMovePending = false;
+    this.titleBootPending = false;
+    this.suppressSelectUntilMs = 0;
     this.pointerInteractive = null;
     this.suppressedClickInteractive = null;
     this.suppressClickUntilMs = 0;
@@ -138,6 +186,27 @@ export class MenuSoundController {
 
     return interactive;
   }
+
+  private playPendingTitleBoot(): boolean {
+    if (
+      !this.titleBootPending
+      || this.root.querySelector(".title-scene") === null
+    ) {
+      return false;
+    }
+
+    this.titleBootPending = false;
+    this.suppressSelectUntilMs =
+      performance.now()
+      + KEYBOARD_CLICK_SUPPRESSION_MS;
+
+    this.audio.playBoot();
+    return true;
+  }
+
+  private readonly handlePointerDown = (): void => {
+    this.playPendingTitleBoot();
+  };
 
   private readonly handleFocusIn = (
     event: FocusEvent,
@@ -189,6 +258,11 @@ export class MenuSoundController {
 
     const nowMs = performance.now();
 
+    if (nowMs <= this.suppressSelectUntilMs) {
+      this.suppressSelectUntilMs = 0;
+      return;
+    }
+
     if (
       interactive
         === this.suppressedClickInteractive
@@ -205,6 +279,10 @@ export class MenuSoundController {
   private readonly handleKeyDown = (
     event: KeyboardEvent,
   ): void => {
+    if (this.playPendingTitleBoot()) {
+      return;
+    }
+
     if (NAVIGATION_KEYS.has(event.code)) {
       const isHubGridMovement =
         HUB_MOVEMENT_KEYS.has(event.code)

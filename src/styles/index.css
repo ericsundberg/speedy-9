@@ -4,6 +4,7 @@
 @import "./layout.css";
 @import "./console.css";
 @import "./hud-runtime.css";
+@import "./menu-option.css";
 @import "./title.css";
 @import "./hub.css";
 @import "./hub-interaction.css";
@@ -12,6 +13,7 @@
 @import "./deadeye.css";
 @import "./pong.css";
 @import "./space-war.css";
+@import "./tower-climb.css";
 @import "./driving.css";
 @import "./vector-maze.css";
 @import "./memory-burst.css";

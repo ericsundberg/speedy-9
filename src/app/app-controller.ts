@@ -76,14 +76,20 @@ export class AppController {
   }
 
   private showTitle(): void {
+    this.menuSounds.stopMusic();
+
     this.router.navigate(
       new TitleScene({
         onBeginRun: this.handleBeginRun,
       }),
     );
+
+    this.menuSounds.queueTitleBoot();
   }
 
-  private showHub(): void {
+  private showHub(
+    musicDelaySeconds = 0.04,
+  ): void {
     const state = this.runManager.getState();
 
     if (state.kind !== "hub") {
@@ -98,20 +104,28 @@ export class AppController {
         onSelect: this.handleStageSelect,
       }),
     );
+
+    this.menuSounds.startStageSelectMusic(
+      musicDelaySeconds,
+    );
   }
 
   private showResults(result: CompletedRun): void {
+    this.menuSounds.stopMusic();
+
     this.router.navigate(
       new ResultsScene({
         result,
         onNewRun: this.handleNewRun,
       }),
     );
+
+    this.menuSounds.startRunCompleteMusic();
   }
 
   private readonly handleBeginRun = (): void => {
     this.runManager.beginRun();
-    this.showHub();
+    this.showHub(0.62);
   };
 
   private readonly handleStageSelect = (
@@ -121,6 +135,7 @@ export class AppController {
       return;
     }
 
+    this.menuSounds.stopMusic();
     this.runManager.enterStage(stageId);
 
     const stageSeed = this.runManager.getStageSeed(stageId);

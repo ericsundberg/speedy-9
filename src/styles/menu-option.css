@@ -1,0 +1,45 @@
+.menu-option {
+  min-width: 11.5rem;
+  margin: 0;
+  padding: 0.35rem 0.75rem;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: rgb(255 255 255 / 58%);
+  font-family:
+    "Workbench",
+    "Courier New",
+    monospace;
+  font-size: clamp(1.2rem, 3vw, 2rem);
+  font-weight: 550;
+  letter-spacing: 0.08em;
+  line-height: 1.25;
+  text-align: center;
+  cursor: pointer;
+}
+
+.menu-option:hover,
+.menu-option:focus-visible,
+.menu-option--selected {
+  color: #ffffff;
+  text-shadow:
+    0 0 0.3rem rgb(255 255 255 / 90%),
+    0 0 0.8rem rgb(255 255 255 / 48%);
+}
+
+.menu-option:disabled {
+  cursor: default;
+  opacity: 0.72;
+}
+
+/* MENU FOCUS CLEANUP START */
+button.menu-option,
+button.menu-option:focus,
+button.menu-option:focus-visible,
+button.menu-option:active {
+  border: 0 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+  -webkit-tap-highlight-color: transparent;
+}
+/* MENU FOCUS CLEANUP END */

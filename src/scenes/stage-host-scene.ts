@@ -2,6 +2,9 @@ import type {
   Scene,
 } from "../app/scene";
 import {
+  formatMenuOptionLabel,
+} from "./menu-option";
+import {
   debug_mode,
 } from "../core/debug";
 import type {
@@ -133,7 +136,8 @@ export class StageHostScene implements Scene {
     options.className = "stage-pause-overlay__options";
 
     const resumeButton = document.createElement("button");
-    resumeButton.className = "stage-pause-overlay__option";
+    resumeButton.className =
+      "menu-option stage-pause-overlay__option";
     resumeButton.type = "button";
     resumeButton.tabIndex = -1;
     resumeButton.addEventListener(
@@ -149,7 +153,7 @@ export class StageHostScene implements Scene {
       document.createElement("button");
 
     exitStageButton.className =
-      "stage-pause-overlay__option";
+      "menu-option stage-pause-overlay__option";
 
     exitStageButton.type = "button";
     exitStageButton.tabIndex = -1;
@@ -295,22 +299,24 @@ export class StageHostScene implements Scene {
       this.selectedPauseOption === "resume";
 
     this.resumeButton.textContent =
-      resumeSelected
-        ? "> RESUME <"
-        : "RESUME";
+      formatMenuOptionLabel(
+        "RESUME",
+        resumeSelected,
+      );
 
     this.exitStageButton.textContent =
-      resumeSelected
-        ? "EXIT STAGE"
-        : "> EXIT STAGE <";
+      formatMenuOptionLabel(
+        "EXIT STAGE",
+        !resumeSelected,
+      );
 
     this.resumeButton.classList.toggle(
-      "stage-pause-overlay__option--selected",
+      "menu-option--selected",
       resumeSelected,
     );
 
     this.exitStageButton.classList.toggle(
-      "stage-pause-overlay__option--selected",
+      "menu-option--selected",
       !resumeSelected,
     );
   }

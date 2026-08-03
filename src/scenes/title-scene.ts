@@ -1,7 +1,43 @@
-import type { Scene } from "../app/scene";
+import type {
+  Scene,
+} from "../app/scene";
+import {
+  formatMenuOptionLabel,
+} from "./menu-option";
 
 interface TitleSceneOptions {
-  onBeginRun(): void;
+  readonly onBeginRun: () => void;
+}
+
+const SVG_NAMESPACE =
+  "http://www.w3.org/2000/svg";
+
+function createFrameRect(
+  className: string,
+  x: string,
+  y: string,
+  width: string,
+  height: string,
+): SVGRectElement {
+  const rect = document.createElementNS(
+    SVG_NAMESPACE,
+    "rect",
+  );
+
+  rect.setAttribute("class", className);
+  rect.setAttribute("x", x);
+  rect.setAttribute("y", y);
+  rect.setAttribute("width", width);
+  rect.setAttribute("height", height);
+  rect.setAttribute("rx", "2");
+  rect.setAttribute("pathLength", "100");
+  rect.setAttribute("fill", "none");
+  rect.setAttribute(
+    "vector-effect",
+    "non-scaling-stroke",
+  );
+
+  return rect;
 }
 
 export class TitleScene implements Scene {
@@ -16,42 +52,81 @@ export class TitleScene implements Scene {
     this.destroy();
 
     const scene = document.createElement("section");
+
     scene.className = "title-scene";
     scene.dataset.scene = "title";
-    scene.setAttribute("aria-labelledby", "game-title");
+    scene.setAttribute(
+      "aria-labelledby",
+      "game-title",
+    );
+
+    const frame = document.createElementNS(
+      SVG_NAMESPACE,
+      "svg",
+    );
+
+    frame.classList.add("title-scene__frame");
+    frame.setAttribute("viewBox", "0 0 600 520");
+    frame.setAttribute(
+      "preserveAspectRatio",
+      "none",
+    );
+    frame.setAttribute("aria-hidden", "true");
+    frame.setAttribute("focusable", "false");
+
+    frame.append(
+      createFrameRect(
+        "title-scene__frame-line title-scene__frame-line--outer",
+        "8",
+        "8",
+        "584",
+        "504",
+      ),
+      createFrameRect(
+        "title-scene__frame-line title-scene__frame-line--inner",
+        "34",
+        "32",
+        "532",
+        "456",
+      ),
+    );
 
     const title = document.createElement("h1");
+
     title.id = "game-title";
     title.className = "title-scene__title";
-    title.textContent = "SPEEDY 9";
+
+    const titleWord = document.createElement("span");
+
+    titleWord.className = "title-scene__title-word";
+    titleWord.textContent = "SPEEDY";
+
+    const titleNumber = document.createElement("span");
+
+    titleNumber.className = "title-scene__title-number";
+    titleNumber.textContent = "9";
+
+    title.append(titleWord, titleNumber);
 
     const actions = document.createElement("div");
+
     actions.className = "title-scene__actions";
 
     const beginButton = document.createElement("button");
+
     beginButton.className =
-      "vector-button vector-button--primary";
+      "menu-option menu-option--selected";
     beginButton.type = "button";
-    beginButton.textContent = "BEGIN RUN";
+    beginButton.textContent =
+      formatMenuOptionLabel(
+        "BEGIN RUN",
+        true,
+      );
 
-    const audioButton = document.createElement("button");
-    audioButton.className =
-      "vector-button vector-button--secondary";
-    audioButton.type = "button";
-    audioButton.disabled = true;
-    audioButton.textContent = "AUDIO: OFFLINE";
-    audioButton.title = "Audio is not yet available.";
-
-    actions.append(beginButton, audioButton);
-
-    const information = document.createElement("div");
-    information.className = "title-scene__information";
-    information.append(
-      this.createControlsPanel(),
-      this.createCreditsPanel(),
-    );
+    actions.append(beginButton);
 
     const record = document.createElement("p");
+
     record.className = "title-scene__record";
 
     const recordLabel = document.createElement("span");
@@ -61,7 +136,19 @@ export class TitleScene implements Scene {
     recordValue.textContent = "NO RECORDED RUN";
 
     record.append(recordLabel, recordValue);
-    scene.append(title, actions, information, record);
+
+    const credit = document.createElement("p");
+
+    credit.className = "title-scene__credit";
+    credit.textContent = "A GAME BY ERIC SUNDBERG";
+
+    scene.append(
+      frame,
+      title,
+      actions,
+      record,
+      credit,
+    );
 
     this.beginButton = beginButton;
 
@@ -71,7 +158,10 @@ export class TitleScene implements Scene {
     );
 
     root.replaceChildren(scene);
-    beginButton.focus();
+
+    beginButton.focus({
+      preventScroll: true,
+    });
   }
 
   public destroy(): void {
@@ -89,55 +179,12 @@ export class TitleScene implements Scene {
     }
 
     this.beginButton.disabled = true;
-    this.beginButton.textContent = "STARTING";
+    this.beginButton.textContent =
+      formatMenuOptionLabel(
+        "STARTING",
+        true,
+      );
+
     this.options.onBeginRun();
   };
-
-  private createControlsPanel(): HTMLDetailsElement {
-    const controls = document.createElement("details");
-    controls.className = "vector-details";
-
-    const summary = document.createElement("summary");
-    summary.textContent = "CONTROLS";
-
-    const controlsList = document.createElement("dl");
-    controlsList.className = "controls-list";
-
-    const controlsData: readonly [string, string][] = [
-      ["MOVE / NAVIGATE", "WASD or Arrow Keys"],
-      ["SELECT / ACTION", "Enter, Space, or Primary Click"],
-      ["RESTART STAGE", "R"],
-      ["PAUSE", "Escape"],
-    ];
-
-    for (const [term, description] of controlsData) {
-      const termElement = document.createElement("dt");
-      termElement.textContent = term;
-
-      const descriptionElement = document.createElement("dd");
-      descriptionElement.textContent = description;
-
-      controlsList.append(
-        termElement,
-        descriptionElement,
-      );
-    }
-
-    controls.append(summary, controlsList);
-    return controls;
-  }
-
-  private createCreditsPanel(): HTMLDetailsElement {
-    const credits = document.createElement("details");
-    credits.className = "vector-details";
-
-    const summary = document.createElement("summary");
-    summary.textContent = "CREDITS";
-
-    const text = document.createElement("p");
-    text.textContent = "Built with TypeScript, SVG, and Web Audio.";
-
-    credits.append(summary, text);
-    return credits;
-  }
 }

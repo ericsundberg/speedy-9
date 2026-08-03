@@ -11,6 +11,7 @@ export type HubGlyphId =
   | "pong"
   | "pit"
   | "tower"
+  | "tic-tac-toe"
   | "maze"
   | "memory"
   | "pace"
@@ -53,8 +54,8 @@ const HUB_STAGE_PRESENTATIONS: Readonly<
     glyph: "pit",
   },
   "tower-climb": {
-    labelLines: ["TOWER", "CLIMB"],
-    glyph: "tower",
+    labelLines: ["TIC TAC", "TOE"],
+    glyph: "tic-tac-toe",
   },
   "vector-maze": {
     labelLines: ["VECTOR", "MAZE"],
