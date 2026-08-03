@@ -27,3 +27,5 @@ dist-ssr
 
 tools/snapshots/
 tools/__pycache__/
+
+/tools/
